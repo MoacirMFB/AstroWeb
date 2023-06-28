@@ -12,13 +12,13 @@
 	<atom:link href="/index.php/feed/" rel="self" type="application/rss+xml" />
 	<link>/</link>
 	<description>Moacir&#039;s Site</description>
-	<lastBuildDate>Wed, 17 May 2023 23:33:33 +0000</lastBuildDate>
+	<lastBuildDate>Mon, 22 May 2023 08:29:08 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
 	1	</sy:updateFrequency>
-	<generator>https://wordpress.org/?v=6.2.1</generator>
+	<generator>https://wordpress.org/?v=6.2.2</generator>
 
 <image>
 	<url>/wp-content/uploads/2021/10/Site_Logo_v1-e1633899284424-150x150.png</url>

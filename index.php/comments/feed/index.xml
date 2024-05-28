@@ -8,14 +8,14 @@
 <channel>
 	<title>
 	Comments for Moacir Fonseca Becker	</title>
-	<atom:link href="https://moacirmfb.github.io/AstroWeb/index.php/comments/feed/" rel="self" type="application/rss+xml" />
-	<link>https://moacirmfb.github.io/AstroWeb/</link>
+	<atom:link href="/index.php/comments/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
 	<description>Moacir&#039;s Site</description>
-	<lastBuildDate>Wed, 02 Aug 2023 02:26:08 +0000</lastBuildDate>
+	<lastBuildDate>Tue, 28 May 2024 07:36:42 +0000</lastBuildDate>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
 	<sy:updateFrequency>
 	1	</sy:updateFrequency>
-	<generator>https://wordpress.org/?v=6.2.2</generator>
+	<generator>https://wordpress.org/?v=6.5.3</generator>
 </channel>
 </rss>

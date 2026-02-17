@@ -1601,14 +1601,36 @@ const externalMediaCategories: MediaCategory[] = [
 							});
 						};
 
-						const drawSunburst = (layout, selectedKey) => {
-							if (!(sunburst instanceof SVGSVGElement)) {
-								return;
-							}
-							sunburst.innerHTML = '';
+							const drawSunburst = (layout, selectedKey) => {
+								if (!(sunburst instanceof SVGSVGElement)) {
+									return;
+								}
+								sunburst.innerHTML = '';
 
-							const selectedArea = layout.find((area) => area.key === selectedKey);
-							const selectedSkills = Array.isArray(selectedArea?.skills) ? selectedArea.skills : [];
+								const selectedArea = layout.find((area) => area.key === selectedKey);
+								const selectedSkills = Array.isArray(selectedArea?.skills) ? selectedArea.skills : [];
+								let hoverSliceLabel = null;
+
+								const clearHoverSliceLabel = () => {
+									if (hoverSliceLabel) {
+										hoverSliceLabel.remove();
+										hoverSliceLabel = null;
+									}
+								};
+
+								const showHoverSliceLabel = (labelText, angle, radius) => {
+									clearHoverSliceLabel();
+									const hoverPoint = polarToCartesian(chartCenter, chartCenter, radius, angle);
+									const label = document.createElementNS(svgNs, 'text');
+									label.setAttribute('class', 'sunburst-hover-label');
+									label.setAttribute('x', hoverPoint.x.toFixed(2));
+									label.setAttribute('y', hoverPoint.y.toFixed(2));
+									label.setAttribute('text-anchor', 'middle');
+									label.setAttribute('dominant-baseline', 'middle');
+									label.textContent = labelText;
+									sunburst.append(label);
+									hoverSliceLabel = label;
+								};
 
 							layout.forEach((area) => {
 								const path = document.createElementNS(svgNs, 'path');
@@ -1637,15 +1659,19 @@ const externalMediaCategories: MediaCategory[] = [
 									path.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
 								}
 
-								path.addEventListener('click', () => {
-									renderArea(area.key);
-									if (typeof path.blur === 'function') {
-										path.blur();
-									}
-								});
+									path.addEventListener('click', () => {
+										renderArea(area.key);
+										if (typeof path.blur === 'function') {
+											path.blur();
+										}
+									});
+									path.addEventListener('pointerenter', () =>
+										showHoverSliceLabel(area.label, area.midAngle, outerOuterRadius + 14),
+									);
+									path.addEventListener('pointerleave', clearHoverSliceLabel);
 
-								const tooltip = document.createElementNS(svgNs, 'title');
-								tooltip.textContent = `${area.label}: ${area.count} skills`;
+									const tooltip = document.createElementNS(svgNs, 'title');
+									tooltip.textContent = `${area.label}: ${area.count} skills`;
 								path.append(tooltip);
 								sunburst.append(path);
 
@@ -1695,14 +1721,18 @@ const externalMediaCategories: MediaCategory[] = [
 									skillPath.setAttribute('fill', selectedArea.color || '#62b8ff');
 									skillPath.setAttribute('fill-opacity', (0.72 + ((index % 3) * 0.1)).toFixed(2));
 
-									const skillTooltip = document.createElementNS(svgNs, 'title');
-									skillTooltip.textContent = skill;
-									skillPath.append(skillTooltip);
-									sunburst.append(skillPath);
+										const skillTooltip = document.createElementNS(svgNs, 'title');
+										skillTooltip.textContent = skill;
+										skillPath.append(skillTooltip);
+										sunburst.append(skillPath);
+										skillPath.addEventListener('pointerenter', () =>
+											showHoverSliceLabel(skill, skillMid, innerOuterRadius + 15),
+										);
+										skillPath.addEventListener('pointerleave', clearHoverSliceLabel);
 
-									if (skillSweep >= 12) {
-										const skillLabelPoint = polarToCartesian(
-											chartCenter,
+										if (skillSweep >= 12) {
+											const skillLabelPoint = polarToCartesian(
+												chartCenter,
 											chartCenter,
 											(innerInnerRadius + innerOuterRadius) / 2,
 											skillMid,
@@ -1718,11 +1748,11 @@ const externalMediaCategories: MediaCategory[] = [
 											'transform',
 											`rotate(${skillLabelRotation.toFixed(2)} ${skillLabelPoint.x.toFixed(2)} ${skillLabelPoint.y.toFixed(2)})`,
 										);
-										skillLabel.textContent = getShortSkillLabel(skill);
-										sunburst.append(skillLabel);
-									}
-								});
-							}
+											skillLabel.textContent = getShortSkillLabel(skill);
+											sunburst.append(skillLabel);
+										}
+									});
+								}
 
 							const core = document.createElementNS(svgNs, 'circle');
 							core.setAttribute('class', 'sunburst-core');
@@ -2889,6 +2919,18 @@ const externalMediaCategories: MediaCategory[] = [
 		stroke: rgba(255, 255, 255, 0.32);
 		stroke-width: 0.35;
 		paint-order: stroke;
+		user-select: none;
+	}
+
+	:global(.sunburst-hover-label) {
+		fill: #f4fbff;
+		font-size: 8.6px;
+		font-weight: 800;
+		letter-spacing: 0.01em;
+		pointer-events: none;
+		paint-order: stroke;
+		stroke: rgba(2, 10, 24, 0.92);
+		stroke-width: 0.95;
 		user-select: none;
 	}
 

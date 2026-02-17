@@ -140,8 +140,21 @@ const getYouTubeThumbnailFromUrl = (url: string): string | null => {
 	return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
 };
 
-const getProjectEra = (year: string): 'recent' | 'legacy' =>
-	year.includes('2023') ? 'recent' : 'legacy';
+const RECENT_PROJECT_START_YEAR = 2023;
+
+const getProjectStartYear = (year: string): number | null => {
+	const match = year.match(/\d{4}/);
+	if (!match) {
+		return null;
+	}
+	const parsed = Number(match[0]);
+	return Number.isFinite(parsed) ? parsed : null;
+};
+
+const getProjectEra = (year: string): 'recent' | 'legacy' => {
+	const startYear = getProjectStartYear(year);
+	return startYear !== null && startYear >= RECENT_PROJECT_START_YEAR ? 'recent' : 'legacy';
+};
 
 const mediaKindLabels: Record<MediaKind, string> = {
 	podcast: 'Podcast',
@@ -852,7 +865,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 			<div class="portfolio-toolbar" role="toolbar" aria-label="Project filters">
 				<button type="button" class="filter-button is-active" data-filter="all">All Projects</button>
-				<button type="button" class="filter-button" data-filter="recent">Recent (2023)</button>
+				<button type="button" class="filter-button" data-filter="recent">{`Recent (${RECENT_PROJECT_START_YEAR}+)`}</button>
 				<button type="button" class="filter-button" data-filter="legacy">Legacy</button>
 				<button type="button" class="filter-button" data-filter="video">With Video</button>
 			</div>
@@ -1609,18 +1622,20 @@ const externalMediaCategories: MediaCategory[] = [
 
 								const selectedArea = layout.find((area) => area.key === selectedKey);
 								const selectedSkills = Array.isArray(selectedArea?.skills) ? selectedArea.skills : [];
-								let hoverSliceLabel = null;
+								let hoverSliceChip = null;
 
 								const clearHoverSliceLabel = () => {
-									if (hoverSliceLabel) {
-										hoverSliceLabel.remove();
-										hoverSliceLabel = null;
+									if (hoverSliceChip) {
+										hoverSliceChip.remove();
+										hoverSliceChip = null;
 									}
 								};
 
 								const showHoverSliceLabel = (labelText, angle, radius) => {
 									clearHoverSliceLabel();
 									const hoverPoint = polarToCartesian(chartCenter, chartCenter, radius, angle);
+									const chip = document.createElementNS(svgNs, 'g');
+									chip.setAttribute('class', 'sunburst-hover-chip');
 									const label = document.createElementNS(svgNs, 'text');
 									label.setAttribute('class', 'sunburst-hover-label');
 									label.setAttribute('x', hoverPoint.x.toFixed(2));
@@ -1628,8 +1643,22 @@ const externalMediaCategories: MediaCategory[] = [
 									label.setAttribute('text-anchor', 'middle');
 									label.setAttribute('dominant-baseline', 'middle');
 									label.textContent = labelText;
-									sunburst.append(label);
-									hoverSliceLabel = label;
+									chip.append(label);
+									sunburst.append(chip);
+
+									const textBox = label.getBBox();
+									const padX = 7;
+									const padY = 4;
+									const background = document.createElementNS(svgNs, 'rect');
+									background.setAttribute('class', 'sunburst-hover-chip-bg');
+									background.setAttribute('x', (textBox.x - padX).toFixed(2));
+									background.setAttribute('y', (textBox.y - padY).toFixed(2));
+									background.setAttribute('width', (textBox.width + padX * 2).toFixed(2));
+									background.setAttribute('height', (textBox.height + padY * 2).toFixed(2));
+									background.setAttribute('rx', '8');
+									background.setAttribute('ry', '8');
+									chip.insertBefore(background, label);
+									hoverSliceChip = chip;
 								};
 
 							layout.forEach((area) => {
@@ -2922,15 +2951,22 @@ const externalMediaCategories: MediaCategory[] = [
 		user-select: none;
 	}
 
+	:global(.sunburst-hover-chip) {
+		pointer-events: none;
+	}
+
+	:global(.sunburst-hover-chip-bg) {
+		fill: rgba(2, 10, 24, 0.9);
+		stroke: rgba(166, 220, 255, 0.62);
+		stroke-width: 0.8;
+	}
+
 	:global(.sunburst-hover-label) {
 		fill: #f4fbff;
 		font-size: 8.6px;
 		font-weight: 800;
 		letter-spacing: 0.01em;
 		pointer-events: none;
-		paint-order: stroke;
-		stroke: rgba(2, 10, 24, 0.92);
-		stroke-width: 0.95;
 		user-select: none;
 	}
 

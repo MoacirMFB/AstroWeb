@@ -546,7 +546,7 @@ const skillAreas: SkillArea[] = [
 		label: 'Software',
 		shortLabel: 'Software',
 		description: 'Programming and machine-learning implementation for technical problem solving.',
-		color: '#4cb6ff',
+		color: '#21c8ff',
 		skills: ['Python', 'Java', 'C', 'Machine Learning', 'MATLAB'],
 	},
 	{
@@ -554,7 +554,7 @@ const skillAreas: SkillArea[] = [
 		label: 'Modeling and Simulation',
 		shortLabel: 'Modeling',
 		description: 'System modeling and simulation methods for mission architecture and analysis.',
-		color: '#71cfff',
+		color: '#ff9f1c',
 		skills: ['AnyLogic', 'GENESYS', 'Simulation', 'Optimal Control', 'Astrodynamics'],
 	},
 	{
@@ -562,7 +562,7 @@ const skillAreas: SkillArea[] = [
 		label: 'Mechanical and Aerospace',
 		shortLabel: 'Mechanical',
 		description: 'Mechanical design and aerospace system engineering from concept through prototyping.',
-		color: '#5c8dff',
+		color: '#06d6a0',
 		skills: [
 			'SolidWorks',
 			'Inventor',
@@ -578,7 +578,7 @@ const skillAreas: SkillArea[] = [
 		label: 'Electrical and Embedded',
 		shortLabel: 'Electrical',
 		description: 'Electronics design, embedded integration, sensing, and field-ready hardware work.',
-		color: '#4fd7d6',
+		color: '#ff4d6d',
 		skills: ['KiCAD', 'OrCAD', 'Data Acquisition', 'Embedded Systems', 'Networking', 'Soldering', 'RTOS'],
 	},
 	{
@@ -586,23 +586,8 @@ const skillAreas: SkillArea[] = [
 		label: 'Platforms and Workflow',
 		shortLabel: 'Platforms',
 		description: 'Tooling used for deployment, analysis workflows, documentation, and collaboration.',
-		color: '#9eb7ff',
+		color: '#b8f12c',
 		skills: ['GNU/Linux', 'LaTeX', 'LabVIEW', 'Spreadsheets', 'WordPress', 'Google Cloud'],
-	},
-	{
-		key: 'soft',
-		label: 'Soft Skills',
-		shortLabel: 'Soft Skills',
-		description: 'Leadership and communication capabilities used to coordinate teams and deliver outcomes.',
-		color: '#7fd0ff',
-		skills: [
-			'Leadership',
-			'Project Management',
-			'Technical Communication',
-			'Mentoring',
-			'Public Speaking',
-			'Cross-cultural Collaboration',
-		],
 	},
 ];
 
@@ -1013,18 +998,16 @@ const externalMediaCategories: MediaCategory[] = [
 		<section id="skills" class="section-shell">
 			<div class="section-header">
 				<h2>Skills</h2>
-				<p>Interactive skill distribution by area. Click a slice to expand it into individual skills.</p>
 			</div>
 			<div class="skills-chart-shell" data-skills-chart>
 				<div class="skills-visual">
 					<svg
 						class="skills-sunburst"
-						viewBox="0 0 260 260"
+						viewBox="0 0 340 340"
 						role="img"
 						aria-label="Interactive skills sunburst"
 						data-skills-sunburst
 					></svg>
-					<p class="skills-hint">Click any area slice to expand into individual skills</p>
 				</div>
 
 				<div class="skills-panel">
@@ -1532,11 +1515,11 @@ const externalMediaCategories: MediaCategory[] = [
 						const listTarget = skillsRoot.querySelector('[data-skill-active-list]');
 						const sunburst = skillsRoot.querySelector('[data-skills-sunburst]');
 						const svgNs = 'http://www.w3.org/2000/svg';
-						const chartCenter = 130;
-						const outerInnerRadius = 72;
-						const outerOuterRadius = 122;
-						const innerInnerRadius = 18;
-						const innerOuterRadius = 66;
+						const chartCenter = 170;
+						const outerInnerRadius = 90;
+						const outerOuterRadius = 166;
+						const innerInnerRadius = 24;
+						const innerOuterRadius = 84;
 						const totalSkillCount = normalizedAreas.reduce(
 							(sum, area) => sum + Math.max(1, Number(area.count) || area.skills.length),
 							0,
@@ -1552,6 +1535,15 @@ const externalMediaCategories: MediaCategory[] = [
 							};
 						};
 
+						const getUprightRadialRotation = (angleInDegrees) => {
+							const normalized = ((angleInDegrees % 360) + 360) % 360;
+							let rotation = normalized + 90;
+							if (rotation > 90 && rotation < 270) {
+								rotation += 180;
+							}
+							return ((rotation % 360) + 360) % 360;
+						};
+
 						const getRingSectorPath = (cx, cy, innerRadius, outerRadius, startAngle, endAngle) => {
 							const outerStart = polarToCartesian(cx, cy, outerRadius, startAngle);
 							const outerEnd = polarToCartesian(cx, cy, outerRadius, endAngle);
@@ -1563,14 +1555,14 @@ const externalMediaCategories: MediaCategory[] = [
 						};
 
 						const getShortSkillLabel = (skill) => {
-							if (skill.length <= 13) {
+							if (skill.length <= 10) {
 								return skill;
 							}
 							const words = skill.split(' ').filter(Boolean);
-							if (words.length === 2 && words[0].length <= 8 && words[1].length <= 8) {
+							if (words.length === 2 && words[0].length <= 6 && words[1].length <= 6) {
 								return `${words[0]} ${words[1]}`;
 							}
-							return `${skill.slice(0, 11)}…`;
+							return `${skill.slice(0, 8)}…`;
 						};
 
 						const buildAreaLayout = (selectedKey) => {
@@ -1581,7 +1573,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 							const selectedCount = Math.max(1, Number(selectedArea.count) || selectedArea.skills.length);
 							const selectedBaseSweep = totalSkillCount > 0 ? (selectedCount / totalSkillCount) * 360 : 0;
-							const selectedSweep = clamp(selectedBaseSweep + 65, 142, 176);
+							const selectedSweep = clamp(selectedBaseSweep + 88, 164, 208);
 							const remainingCount = Math.max(0, totalSkillCount - selectedCount);
 							const remainingSweep = 360 - selectedSweep;
 
@@ -1634,15 +1626,12 @@ const externalMediaCategories: MediaCategory[] = [
 								);
 								path.setAttribute('fill', area.color || '#62b8ff');
 								path.setAttribute('data-skill-key', area.key);
-								path.setAttribute('tabindex', '0');
-								path.setAttribute('role', 'button');
-								path.setAttribute('aria-pressed', area.isSelected ? 'true' : 'false');
 								path.setAttribute('aria-label', `${area.label}: ${area.count} skills`);
 								path.style.transformOrigin = `${chartCenter}px ${chartCenter}px`;
 
 								if (area.isSelected) {
 									const radians = ((area.midAngle - 90) * Math.PI) / 180;
-									const offset = 5.5;
+									const offset = 8;
 									const x = Math.cos(radians) * offset;
 									const y = Math.sin(radians) * offset;
 									path.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
@@ -1655,33 +1644,32 @@ const externalMediaCategories: MediaCategory[] = [
 									}
 								});
 
-								path.addEventListener('keydown', (event) => {
-									if (event.key === 'Enter' || event.key === ' ') {
-										event.preventDefault();
-										renderArea(area.key);
-									}
-								});
-
 								const tooltip = document.createElementNS(svgNs, 'title');
 								tooltip.textContent = `${area.label}: ${area.count} skills`;
 								path.append(tooltip);
 								sunburst.append(path);
 
-								if (area.sweep >= 18) {
-									const labelPosition = polarToCartesian(
-										chartCenter,
-										chartCenter,
-										(outerInnerRadius + outerOuterRadius) / 2 + (area.isSelected ? 3.5 : 0),
-										area.midAngle,
-									);
-									const label = document.createElementNS(svgNs, 'text');
-									label.setAttribute('class', 'sunburst-parent-label');
-									label.setAttribute('x', labelPosition.x.toFixed(2));
-									label.setAttribute('y', labelPosition.y.toFixed(2));
-									label.setAttribute('text-anchor', 'middle');
-									label.textContent = area.shortLabel || area.label;
-									sunburst.append(label);
-								}
+									if (area.sweep >= 18) {
+										const labelPosition = polarToCartesian(
+											chartCenter,
+											chartCenter,
+											(outerInnerRadius + outerOuterRadius) / 2 + (area.isSelected ? 5 : 0),
+											area.midAngle,
+										);
+										const labelRotation = getUprightRadialRotation(area.midAngle);
+										const label = document.createElementNS(svgNs, 'text');
+										label.setAttribute('class', 'sunburst-parent-label');
+										label.setAttribute('x', labelPosition.x.toFixed(2));
+										label.setAttribute('y', labelPosition.y.toFixed(2));
+										label.setAttribute('text-anchor', 'middle');
+										label.setAttribute('dominant-baseline', 'middle');
+										label.setAttribute(
+											'transform',
+											`rotate(${labelRotation.toFixed(2)} ${labelPosition.x.toFixed(2)} ${labelPosition.y.toFixed(2)})`,
+										);
+										label.textContent = area.shortLabel || area.label;
+										sunburst.append(label);
+									}
 							});
 
 							if (selectedArea && selectedSkills.length > 0) {
@@ -1705,26 +1693,34 @@ const externalMediaCategories: MediaCategory[] = [
 										),
 									);
 									skillPath.setAttribute('fill', selectedArea.color || '#62b8ff');
-									skillPath.setAttribute('fill-opacity', (0.56 + ((index % 4) * 0.09)).toFixed(2));
+									skillPath.setAttribute('fill-opacity', (0.72 + ((index % 3) * 0.1)).toFixed(2));
 
 									const skillTooltip = document.createElementNS(svgNs, 'title');
 									skillTooltip.textContent = skill;
 									skillPath.append(skillTooltip);
 									sunburst.append(skillPath);
 
-									const skillLabelPoint = polarToCartesian(
-										chartCenter,
-										chartCenter,
-										(innerInnerRadius + innerOuterRadius) / 2,
-										skillMid,
-									);
-									const skillLabel = document.createElementNS(svgNs, 'text');
-									skillLabel.setAttribute('class', 'sunburst-child-label');
-									skillLabel.setAttribute('x', skillLabelPoint.x.toFixed(2));
-									skillLabel.setAttribute('y', skillLabelPoint.y.toFixed(2));
-									skillLabel.setAttribute('text-anchor', 'middle');
-									skillLabel.textContent = getShortSkillLabel(skill);
-									sunburst.append(skillLabel);
+									if (skillSweep >= 12) {
+										const skillLabelPoint = polarToCartesian(
+											chartCenter,
+											chartCenter,
+											(innerInnerRadius + innerOuterRadius) / 2,
+											skillMid,
+										);
+										const skillLabelRotation = getUprightRadialRotation(skillMid);
+										const skillLabel = document.createElementNS(svgNs, 'text');
+										skillLabel.setAttribute('class', 'sunburst-child-label');
+										skillLabel.setAttribute('x', skillLabelPoint.x.toFixed(2));
+										skillLabel.setAttribute('y', skillLabelPoint.y.toFixed(2));
+										skillLabel.setAttribute('text-anchor', 'middle');
+										skillLabel.setAttribute('dominant-baseline', 'middle');
+										skillLabel.setAttribute(
+											'transform',
+											`rotate(${skillLabelRotation.toFixed(2)} ${skillLabelPoint.x.toFixed(2)} ${skillLabelPoint.y.toFixed(2)})`,
+										);
+										skillLabel.textContent = getShortSkillLabel(skill);
+										sunburst.append(skillLabel);
+									}
 								});
 							}
 
@@ -2834,78 +2830,72 @@ const externalMediaCategories: MediaCategory[] = [
 
 	.skills-sunburst {
 		display: block;
-		filter: drop-shadow(0 10px 18px rgba(2, 9, 24, 0.34));
+		filter: drop-shadow(0 12px 20px rgba(2, 9, 24, 0.42));
 		margin: 0 auto;
-		max-width: 24rem;
+		max-width: 32rem;
 		overflow: visible;
 		width: 100%;
 	}
 
-	.sunburst-parent {
+	:global(.sunburst-parent) {
 		cursor: pointer;
-		stroke: rgba(3, 10, 26, 0.65);
-		stroke-width: 1.2;
+		stroke: rgba(2, 8, 24, 0.82);
+		stroke-width: 1.4;
 		transition: transform 0.2s ease, stroke 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
 	}
 
-	.sunburst-parent:hover {
+	:global(.sunburst-parent:hover) {
 		filter: brightness(1.06);
 	}
 
-	.sunburst-parent.is-active {
+	:global(.sunburst-parent.is-active) {
 		filter: brightness(1.1);
 		stroke: rgba(224, 245, 255, 0.95);
 		stroke-width: 1.8;
 	}
 
-	.sunburst-parent:focus,
-	.sunburst-parent:focus-visible {
-		outline: none;
+	:global(.sunburst-parent:focus),
+	:global(.sunburst-parent:focus-visible) {
+		outline: none !important;
 	}
 
-	.sunburst-parent-label {
-		fill: rgba(238, 249, 255, 0.98);
-		font-size: 7px;
+	:global(.sunburst-parent-label) {
+		fill: #0a0f18;
+		font-size: 9.6px;
 		font-weight: 700;
 		letter-spacing: 0.01em;
 		pointer-events: none;
-		text-shadow: 0 1px 2px rgba(2, 9, 24, 0.66);
+		paint-order: stroke;
+		stroke: rgba(255, 255, 255, 0.34);
+		stroke-width: 0.45;
 		user-select: none;
 	}
 
-	.sunburst-child {
+	:global(.sunburst-child) {
 		stroke: rgba(2, 10, 24, 0.62);
 		stroke-width: 1;
 		transition: filter 0.2s ease;
 	}
 
-	.sunburst-child:hover {
+	:global(.sunburst-child:hover) {
 		filter: brightness(1.08);
 	}
 
-	.sunburst-child-label {
-		fill: rgba(235, 247, 255, 0.98);
-		font-size: 5px;
+	:global(.sunburst-child-label) {
+		fill: #0a0f18;
+		font-size: 7.2px;
 		font-weight: 700;
 		pointer-events: none;
-		stroke: rgba(2, 10, 24, 0.78);
-		stroke-width: 0.58;
+		stroke: rgba(255, 255, 255, 0.32);
+		stroke-width: 0.35;
 		paint-order: stroke;
-		text-shadow: 0 1px 2px rgba(2, 9, 24, 0.68);
 		user-select: none;
 	}
 
-	.sunburst-core {
+	:global(.sunburst-core) {
 		fill: rgba(2, 10, 26, 0.92);
 		stroke: rgba(162, 220, 255, 0.42);
 		stroke-width: 1;
-	}
-
-	.skills-hint {
-		color: var(--text-soft) !important;
-		font-size: 0.82rem;
-		margin: 0;
-		text-align: center;
 	}
 
 	.skills-panel {
@@ -3268,7 +3258,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 		.skills-visual {
 			margin: 0 auto;
-			max-width: 21rem;
+			max-width: 29rem;
 			width: 100%;
 		}
 

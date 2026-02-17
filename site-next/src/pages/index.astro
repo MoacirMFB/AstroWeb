@@ -46,12 +46,6 @@ type EducationItem = {
 	logoAlt: string;
 };
 
-type VideoFeature = {
-	title: string;
-	description?: string;
-	video: ProjectVideo;
-};
-
 type PublicationItem = {
 	citation: string;
 	venue: string;
@@ -60,9 +54,22 @@ type PublicationItem = {
 	urlLabel?: string;
 };
 
+type MediaLinkItem = {
+	title: string;
+	description: string;
+	href: string;
+	source: string;
+};
+
+type MediaCategory = {
+	title: string;
+	links: MediaLinkItem[];
+};
+
 type SkillArea = {
 	key: string;
 	label: string;
+	shortLabel: string;
 	description: string;
 	color: string;
 	skills: string[];
@@ -74,6 +81,8 @@ type SkillSlice = SkillArea & {
 	startAngle: number;
 	endAngle: number;
 	midAngle: number;
+	labelX: number;
+	labelY: number;
 	path: string;
 };
 
@@ -130,11 +139,6 @@ const getEmbedUrl = (video: ProjectVideo): string => {
 		params.set('start', String(video.start));
 	}
 	return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
-};
-
-const getYouTubeThumbnail = (video: ProjectVideo): string => {
-	const id = getYouTubeId(video.url);
-	return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '/name-logo.png';
 };
 
 const getProjectEra = (year: string): 'recent' | 'legacy' =>
@@ -498,45 +502,66 @@ const education: EducationItem[] = [
 const skillAreas: SkillArea[] = [
 	{
 		key: 'software',
-		label: 'Software and Computing',
-		description: 'Programming, machine learning, and scientific computing for analytics and automation.',
+		label: 'Software',
+		shortLabel: 'Software',
+		description: 'Programming and machine-learning implementation for technical problem solving.',
 		color: '#4cb6ff',
-		skills: ['Python', 'Java', 'C', 'Machine Learning', 'MATLAB', 'RTOS'],
+		skills: ['Python', 'Java', 'C', 'Machine Learning', 'MATLAB'],
 	},
 	{
-		key: 'simulation',
+		key: 'modeling',
 		label: 'Modeling and Simulation',
-		description: 'Discrete-event and system simulation for mission design and operational studies.',
+		shortLabel: 'Modeling',
+		description: 'System modeling and simulation methods for mission architecture and analysis.',
 		color: '#71cfff',
-		skills: ['AnyLogic', 'GENESYS', 'Simulation', 'LabVIEW'],
+		skills: ['AnyLogic', 'GENESYS', 'Simulation', 'Optimal Control', 'Astrodynamics'],
 	},
 	{
-		key: 'mecaero',
-		label: 'MechE and Aerospace',
-		description: 'Mission-level aerospace engineering, dynamics, and control-focused methods.',
+		key: 'mechanical',
+		label: 'Mechanical and Aerospace',
+		shortLabel: 'Mechanical',
+		description: 'Mechanical design and aerospace system engineering from concept through prototyping.',
 		color: '#5c8dff',
-		skills: ['Aerospace Systems', 'Optimal Control', 'Astrodynamics', 'Satellite Design'],
-	},
-	{
-		key: 'cad',
-		label: 'CAD and Fabrication',
-		description: 'Mechanical design and prototyping for rapid engineering iteration.',
-		color: '#6f7dff',
-		skills: ['SolidWorks', 'Inventor', 'Fusion', 'AutoCAD', '3D Printing'],
+		skills: [
+			'SolidWorks',
+			'Inventor',
+			'Fusion',
+			'AutoCAD',
+			'3D Printing',
+			'Aerospace Systems',
+			'Satellite Design',
+		],
 	},
 	{
 		key: 'electrical',
 		label: 'Electrical and Embedded',
-		description: 'Electronics design, embedded integration, and field-ready hardware execution.',
+		shortLabel: 'Electrical',
+		description: 'Electronics design, embedded integration, sensing, and field-ready hardware work.',
 		color: '#4fd7d6',
-		skills: ['KiCAD', 'OrCAD', 'Data Acquisition', 'Embedded Systems', 'Networking', 'Soldering'],
+		skills: ['KiCAD', 'OrCAD', 'Data Acquisition', 'Embedded Systems', 'Networking', 'Soldering', 'RTOS'],
 	},
 	{
 		key: 'platforms',
 		label: 'Platforms and Workflow',
-		description: 'Core tooling for technical communication, deployment, and research workflows.',
+		shortLabel: 'Platforms',
+		description: 'Tooling used for deployment, analysis workflows, documentation, and collaboration.',
 		color: '#9eb7ff',
-		skills: ['GNU/Linux', 'LaTeX', 'Spreadsheets', 'WordPress', 'Google Cloud'],
+		skills: ['GNU/Linux', 'LaTeX', 'LabVIEW', 'Spreadsheets', 'WordPress', 'Google Cloud'],
+	},
+	{
+		key: 'soft',
+		label: 'Soft Skills',
+		shortLabel: 'Soft Skills',
+		description: 'Leadership and communication capabilities used to coordinate teams and deliver outcomes.',
+		color: '#7fd0ff',
+		skills: [
+			'Leadership',
+			'Project Management',
+			'Technical Communication',
+			'Mentoring',
+			'Public Speaking',
+			'Cross-cultural Collaboration',
+		],
 	},
 ];
 
@@ -548,6 +573,8 @@ const skillSlices: SkillSlice[] = skillAreas.map((area) => {
 	const sweep = totalSkillCount > 0 ? (count / totalSkillCount) * 360 : 0;
 	const startAngle = accumulatedAngle;
 	const endAngle = accumulatedAngle + sweep;
+	const midAngle = startAngle + sweep / 2;
+	const labelPoint = polarToCartesian(60, 60, 33, midAngle);
 	accumulatedAngle = endAngle;
 
 	return {
@@ -556,7 +583,9 @@ const skillSlices: SkillSlice[] = skillAreas.map((area) => {
 		percentage: totalSkillCount > 0 ? (count / totalSkillCount) * 100 : 0,
 		startAngle,
 		endAngle,
-		midAngle: startAngle + sweep / 2,
+		midAngle,
+		labelX: labelPoint.x,
+		labelY: labelPoint.y,
 		path: getPiePath(60, 60, 52, startAngle, endAngle),
 	};
 });
@@ -566,6 +595,7 @@ const skillAreaPayload = skillSlices.map((item) => ({
 	key: item.key,
 	label: item.label,
 	description: item.description,
+	color: item.color,
 	skills: item.skills,
 	count: item.count,
 	percentage: Number(item.percentage.toFixed(1)),
@@ -626,20 +656,116 @@ const publications: PublicationItem[] = [
 	},
 ];
 
-const mediaFeatures: VideoFeature[] = [
+const externalMediaCategories: MediaCategory[] = [
 	{
-		title: 'Epistemas Podcast Presentation (Spanish)',
-		description: 'Podcast feature and discussion about space projects and outreach.',
-		video: { url: 'https://www.youtube.com/watch?v=oIhVfwIRsbI' },
+		title: 'Podcasts and Interviews',
+		links: [
+			{
+				title: 'epiSTEMas Episode E061',
+				description:
+					'Podcast conversation about aerospace engineering and Central American participation in space.',
+				href:
+					'https://epistemaspod.podbean.com/e/moacir-fonseca-becker-ingenieria-mecanica-y-centroamerica-en-el-espacio/',
+				source: 'EpiSTEMas',
+			},
+			{
+				title: 'UNOOSA LEAD Youth Innovation Festival Panel',
+				description: 'Panel segment with the United Nations Office for Outer Space Affairs.',
+				href: 'https://www.youtube.com/watch?v=gW7j54dQGX0&t=970s',
+				source: 'YouTube / UNOOSA',
+			},
+			{
+				title: 'La Reaccion CR Interview',
+				description: 'Spanish-language media interview and discussion.',
+				href: 'https://www.youtube.com/watch?v=UKomvqgaHiU&t=402s',
+				source: 'YouTube',
+			},
+		],
 	},
 	{
-		title:
-			'United Nations Office of Outer Space Affairs - 2021 LEAD Youth Innovation Festival (English)',
-		video: { url: 'https://www.youtube.com/watch?v=gW7j54dQGX0', start: 970 },
+		title: 'News and Feature Articles',
+		links: [
+			{
+				title: 'How Kerbal Space Program Is Inspiring Real Mission Designs',
+				description: 'Feature story mentioning Moacir F. Becker in mission-design context.',
+				href: 'https://www.universetoday.com/articles/how-kerbal-space-program-is-inspiring-real-mission-designs',
+				source: 'Universe Today',
+			},
+			{
+				title: 'Robotifest Projects at UCR',
+				description: 'University article about robotics projects and competition outcomes.',
+				href:
+					'https://www.ucr.ac.cr/noticias/2014/8/19/grandes-proyectos-salen-a-la-luz-en-robotifest-ucr/imprimir.html?empotrar=true&ruta=https%3A%2F%2Fwww.ucr.ac.cr%2Fnoticias%2F2014%2F8%2F19%2Fgrandes-proyectos-salen-a-la-luz-en-robotifest-ucr.html',
+				source: 'Universidad de Costa Rica',
+			},
+			{
+				title: 'DropTES Third Cycle Overview',
+				description: 'Official overview of the third DropTES cycle and participating teams.',
+				href:
+					'https://www.unoosa.org/oosa/en/ourwork/psa/hsti/capacity-building/droptes-third-cycle.html',
+				source: 'UNOOSA',
+			},
+		],
 	},
 	{
-		title: 'Interview for national media - La Reaccion CR (Spanish)',
-		video: { url: 'https://www.youtube.com/watch?v=UKomvqgaHiU', start: 402 },
+		title: 'Official and Institutional Pages',
+		links: [
+			{
+				title: 'UNOOSA Hypergravity and Microgravity Webinar Track',
+				description: 'DropTES winner references with webinar materials.',
+				href: 'https://www.unoosa.org/oosa/en/ourwork/access2space4all/HMTrack_Webinars.html',
+				source: 'UNOOSA',
+			},
+			{
+				title: 'UNOOSA Awardees: Costa Rica TEC and UCR',
+				description: 'Institutional awardee listing for Costa Rica participants.',
+				href:
+					'https://www.unoosa.org/oosa/en/ourwork/access2space4all/awardees/costa_rica_tec_ucr.html',
+				source: 'UNOOSA',
+			},
+			{
+				title: 'UNOOSA Common Webinars',
+				description: 'Webinar index referencing DropTES and related media.',
+				href: 'https://www.unoosa.org/oosa/en/ourwork/access2space4all/Common_Webinars.html',
+				source: 'UNOOSA',
+			},
+			{
+				title: 'MRZ-SAT Project Site',
+				description: 'Official mission page with team and project information.',
+				href: 'https://mrz-sat.unah.edu.hn/english/',
+				source: 'Proyecto Morazan / UNAH',
+			},
+		],
+	},
+	{
+		title: 'Talks, Outreach and Profiles',
+		links: [
+			{
+				title: 'Purdue TicoTalk Event',
+				description: 'BoilerLink event listing featuring Moacir Fonseca Becker.',
+				href: 'https://boilerlink.purdue.edu/event/11509502',
+				source: 'Purdue BoilerLink',
+			},
+			{
+				title: 'Educational Outreach: Colegio Cientifico de San Vito',
+				description: 'Outreach post for high-school students on aerospace pathways.',
+				href:
+					'https://www.facebook.com/CCCRSV/posts/el-joven-moacir-fonseca-becker-es-estudiante-de-posgrado-de-ingenier%C3%ADa-aeroespac/711624457433119/',
+				source: 'Facebook',
+			},
+			{
+				title: 'Google Scholar Profile',
+				description: 'Academic profile with citations and research record.',
+				href: 'https://scholar.google.com/citations?hl=en&user=wc3XeSoAAAAJ',
+				source: 'Google Scholar',
+			},
+			{
+				title: 'Official Personal Site',
+				description: 'Primary personal website and portfolio.',
+				href: 'https://moacir.space/',
+				source: 'moacir.space',
+			},
+		],
 	},
 ];
 ---
@@ -647,6 +773,7 @@ const mediaFeatures: VideoFeature[] = [
 <Layout title="Moacir Fonseca Becker">
 	<main class="page">
 		<div class="aurora" aria-hidden="true">
+			<span class="bg-image-layer"></span>
 			<span class="orb orb-one"></span>
 			<span class="orb orb-two"></span>
 			<span class="orb orb-three"></span>
@@ -867,15 +994,32 @@ const mediaFeatures: VideoFeature[] = [
 								</path>
 							))
 						}
-						<circle cx="60" cy="60" r="23" fill="rgba(2, 12, 30, 0.95)" />
-						<text class="skills-center-total" x="60" y="57" text-anchor="middle">
-							{totalSkillCount}
-						</text>
-						<text class="skills-center-label" x="60" y="66.5" text-anchor="middle">
-							skills
-						</text>
+						{
+							skillSlices.map((area) => (
+								<text
+									class="pie-area-label"
+									x={area.labelX.toFixed(2)}
+									y={area.labelY.toFixed(2)}
+									text-anchor="middle"
+								>
+									{area.shortLabel}
+								</text>
+							))
+						}
 					</svg>
-					<p class="skills-hint">Click any slice or legend row</p>
+					<div class="skills-detail" data-skill-breakdown>
+						<p class="skills-detail-title" data-skill-breakdown-title>
+							{defaultSkillArea.label} Skill Breakdown
+						</p>
+						<svg
+							class="skills-detail-pie"
+							viewBox="0 0 120 120"
+							role="img"
+							aria-label="Selected skill breakdown"
+							data-skill-breakdown-pie
+						></svg>
+					</div>
+					<p class="skills-hint">Click any area slice to expand into individual skills</p>
 				</div>
 
 				<div class="skills-panel">
@@ -1008,25 +1152,28 @@ const mediaFeatures: VideoFeature[] = [
 
 			<section id="media-interviews" class="section-shell">
 				<div class="section-header">
-					<h2>Podcast and Media Interviews</h2>
+					<h2>External Media Links</h2>
+					<p>Selected external references grouped by source type.</p>
 				</div>
-				<div class="media-grid">
+				<div class="media-groups-grid">
 					{
-						mediaFeatures.map((feature) => (
-							<article class="media-card">
-								<a class="media-link" href={feature.video.url} target="_blank" rel="noreferrer">
-									<div class="media-thumb">
-										<img
-											src={getYouTubeThumbnail(feature.video)}
-											alt={`${feature.title} preview thumbnail`}
-											loading="lazy"
-											decoding="async"
-										/>
-										<span class="media-play" aria-hidden="true">▶</span>
-									</div>
-									<h3>{feature.title}</h3>
-									{feature.description && <p>{feature.description}</p>}
-								</a>
+						externalMediaCategories.map((category) => (
+							<article class="media-group-card">
+								<h3>{category.title}</h3>
+								<ul class="media-link-list">
+									{
+										category.links.map((item) => (
+											<li class="media-link-item">
+												<a href={item.href} target="_blank" rel="noreferrer">
+													{item.title}
+												</a>
+												<p>
+													{item.description} <span class="media-source">Source: {item.source}</span>
+												</p>
+											</li>
+										))
+									}
+								</ul>
 							</article>
 						))
 					}
@@ -1101,43 +1248,47 @@ const mediaFeatures: VideoFeature[] = [
 			const buttons = Array.from(document.querySelectorAll('.filter-button'));
 			const cards = Array.from(document.querySelectorAll('.project-card'));
 			const countTarget = document.querySelector('[data-project-count]');
-		if (!buttons.length || !cards.length || !countTarget) {
-			return;
-		}
+			const hasProjectFilters = buttons.length > 0 && cards.length > 0 && Boolean(countTarget);
 
-		const applyFilter = (filter) => {
-			let visibleCount = 0;
-			cards.forEach((card) => {
-				const era = card.getAttribute('data-era');
-				const hasVideo = card.getAttribute('data-has-video');
-				let visible = true;
-				if (filter === 'recent') {
-					visible = era === 'recent';
-				} else if (filter === 'legacy') {
-					visible = era === 'legacy';
-				} else if (filter === 'video') {
-					visible = hasVideo === 'true';
+			const applyFilter = (filter) => {
+				if (!hasProjectFilters || !countTarget) {
+					return;
 				}
 
-				card.hidden = !visible;
-				card.classList.toggle('is-hidden', !visible);
-				if (visible) {
-					visibleCount += 1;
-				}
-			});
+				let visibleCount = 0;
+				cards.forEach((card) => {
+					const era = card.getAttribute('data-era');
+					const hasVideo = card.getAttribute('data-has-video');
+					let visible = true;
+					if (filter === 'recent') {
+						visible = era === 'recent';
+					} else if (filter === 'legacy') {
+						visible = era === 'legacy';
+					} else if (filter === 'video') {
+						visible = hasVideo === 'true';
+					}
 
-			const label = visibleCount === 1 ? 'project' : 'projects';
-			countTarget.textContent = `Showing ${visibleCount} ${label}`;
-		};
-
-			buttons.forEach((button) => {
-				button.addEventListener('click', () => {
-					const filter = button.getAttribute('data-filter') || 'all';
-					buttons.forEach((other) => other.classList.remove('is-active'));
-					button.classList.add('is-active');
-					applyFilter(filter);
+					card.hidden = !visible;
+					card.classList.toggle('is-hidden', !visible);
+					if (visible) {
+						visibleCount += 1;
+					}
 				});
-			});
+
+				const label = visibleCount === 1 ? 'project' : 'projects';
+				countTarget.textContent = `Showing ${visibleCount} ${label}`;
+			};
+
+			if (hasProjectFilters) {
+				buttons.forEach((button) => {
+					button.addEventListener('click', () => {
+						const filter = button.getAttribute('data-filter') || 'all';
+						buttons.forEach((other) => other.classList.remove('is-active'));
+						button.classList.add('is-active');
+						applyFilter(filter);
+					});
+				});
+			}
 
 				const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
 				carousels.forEach((carousel) => {
@@ -1254,6 +1405,86 @@ const mediaFeatures: VideoFeature[] = [
 						const titleTarget = skillsRoot.querySelector('[data-skill-active-title]');
 						const descriptionTarget = skillsRoot.querySelector('[data-skill-active-description]');
 						const listTarget = skillsRoot.querySelector('[data-skill-active-list]');
+						const detailWrap = skillsRoot.querySelector('[data-skill-breakdown]');
+						const detailTitle = skillsRoot.querySelector('[data-skill-breakdown-title]');
+						const detailPie = skillsRoot.querySelector('[data-skill-breakdown-pie]');
+						const svgNs = 'http://www.w3.org/2000/svg';
+
+						const polarToCartesian = (cx, cy, radius, angleInDegrees) => {
+							const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180;
+							return {
+								x: cx + radius * Math.cos(angleInRadians),
+								y: cy + radius * Math.sin(angleInRadians),
+							};
+						};
+
+						const getSectorPath = (cx, cy, radius, startAngle, endAngle) => {
+							const start = polarToCartesian(cx, cy, radius, endAngle);
+							const end = polarToCartesian(cx, cy, radius, startAngle);
+							const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+							return `M ${cx} ${cy} L ${start.x.toFixed(3)} ${start.y.toFixed(3)} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x.toFixed(3)} ${end.y.toFixed(3)} Z`;
+						};
+
+						const renderSkillBreakdown = (area) => {
+							if (!detailWrap || !detailTitle || !detailPie || !Array.isArray(area.skills)) {
+								return;
+							}
+
+							const skills = area.skills;
+							detailPie.textContent = '';
+							detailTitle.textContent = `${area.label} Skill Breakdown`;
+							detailPie.setAttribute('aria-label', `${area.label} skill breakdown`);
+
+							if (skills.length === 0) {
+								detailWrap.classList.remove('is-active');
+								return;
+							}
+
+							const sliceSweep = 360 / skills.length;
+							const centerX = 60;
+							const centerY = 60;
+							const radius = 54;
+							const labelRadius = 35;
+
+							skills.forEach((skill, index) => {
+								const startAngle = index * sliceSweep;
+								const endAngle = startAngle + sliceSweep;
+								const midAngle = startAngle + sliceSweep / 2;
+								const labelPoint = polarToCartesian(centerX, centerY, labelRadius, midAngle);
+
+								const path = document.createElementNS(svgNs, 'path');
+								path.setAttribute('class', 'skill-detail-slice');
+								path.setAttribute('d', getSectorPath(centerX, centerY, radius, startAngle, endAngle));
+								path.setAttribute('fill', area.color || '#5eaef7');
+								path.setAttribute('fill-opacity', (0.62 + ((index % 3) * 0.12)).toFixed(2));
+
+								const tooltip = document.createElementNS(svgNs, 'title');
+								tooltip.textContent = skill;
+								path.append(tooltip);
+								detailPie.append(path);
+
+								const text = document.createElementNS(svgNs, 'text');
+								text.setAttribute('class', 'skill-detail-label');
+								text.setAttribute('x', labelPoint.x.toFixed(2));
+								text.setAttribute('y', labelPoint.y.toFixed(2));
+								text.setAttribute('text-anchor', 'middle');
+								text.textContent = skill;
+								detailPie.append(text);
+							});
+
+							const center = document.createElementNS(svgNs, 'circle');
+							center.setAttribute('cx', String(centerX));
+							center.setAttribute('cy', String(centerY));
+							center.setAttribute('r', '12');
+							center.setAttribute('fill', 'rgba(2, 12, 30, 0.88)');
+							center.setAttribute('stroke', 'rgba(214, 240, 255, 0.55)');
+							center.setAttribute('stroke-width', '0.8');
+							detailPie.append(center);
+
+							detailWrap.classList.remove('is-active');
+							void detailWrap.offsetWidth;
+							detailWrap.classList.add('is-active');
+						};
 
 						const renderArea = (key) => {
 							const area = areaByKey.get(key);
@@ -1271,6 +1502,8 @@ const mediaFeatures: VideoFeature[] = [
 								listTarget.append(item);
 							});
 
+							renderSkillBreakdown(area);
+
 							pieSlices.forEach((slice) => {
 								const isActive = slice.getAttribute('data-skill-key') === key;
 								slice.classList.toggle('is-active', isActive);
@@ -1279,10 +1512,10 @@ const mediaFeatures: VideoFeature[] = [
 								if (isActive) {
 									const angle = Number(slice.getAttribute('data-mid-angle') || '0');
 									const radians = ((angle - 90) * Math.PI) / 180;
-									const offset = 3.2;
+									const offset = 7;
 									const x = Math.cos(radians) * offset;
 									const y = Math.sin(radians) * offset;
-									slice.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
+									slice.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) scale(1.05)`;
 								} else {
 									slice.style.transform = '';
 								}
@@ -1301,6 +1534,7 @@ const mediaFeatures: VideoFeature[] = [
 								if (key) {
 									renderArea(key);
 								}
+								slice.blur();
 							});
 							slice.addEventListener('keydown', (event) => {
 								if ((event.key === 'Enter' || event.key === ' ') && key) {
@@ -1347,10 +1581,7 @@ const mediaFeatures: VideoFeature[] = [
 		--text-soft: #acc7e8;
 		--accent: #58b2ff;
 		--accent-2: #8cd7ff;
-		background:
-			radial-gradient(circle at 12% 8%, rgba(46, 109, 203, 0.34) 0%, rgba(46, 109, 203, 0) 36%),
-			radial-gradient(circle at 86% 24%, rgba(82, 157, 255, 0.2) 0%, rgba(82, 157, 255, 0) 42%),
-			linear-gradient(160deg, #010208 0%, #020713 45%, #05122d 100%);
+		background: #010208;
 		color: var(--text);
 		font-family: 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
 		line-height: 1.55;
@@ -1375,6 +1606,24 @@ const mediaFeatures: VideoFeature[] = [
 		overflow: hidden;
 		pointer-events: none;
 		position: fixed;
+		z-index: -1;
+	}
+
+	.bg-image-layer {
+		background-image:
+			linear-gradient(180deg, rgba(1, 7, 18, 0.54) 0%, rgba(1, 7, 18, 0.72) 100%),
+			url('/backgrounds/site1-bg.png');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		height: 100vw;
+		left: 50%;
+		opacity: 0.8;
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%) rotate(90deg);
+		transform-origin: center;
+		width: 100vh;
 		z-index: -1;
 	}
 
@@ -1661,76 +1910,72 @@ const mediaFeatures: VideoFeature[] = [
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
 
-	.media-grid {
+	.media-groups-grid {
 		display: grid;
-		gap: 0.7rem;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
-	.media-card {
+	.media-group-card {
 		background: rgba(6, 20, 48, 0.58);
 		border: 1px solid rgba(114, 176, 255, 0.3);
 		border-radius: 0.45rem;
-		padding: 0.55rem;
+		display: grid;
+		gap: 0.55rem;
+		padding: 0.62rem 0.68rem;
 	}
 
-	.media-link {
-		color: inherit;
+	.media-group-card h3 {
+		font-size: 0.96rem;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	.media-link-list {
 		display: grid;
-		gap: 0.5rem;
+		gap: 0.55rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.media-link-item {
+		border-top: 1px solid rgba(114, 176, 255, 0.24);
+		display: grid;
+		gap: 0.22rem;
+		padding-top: 0.52rem;
+	}
+
+	.media-link-item:first-child {
+		border-top: 0;
+		padding-top: 0;
+	}
+
+	.media-link-item a {
+		color: #9be3ff;
+		font-size: 0.87rem;
+		font-weight: 700;
+		line-height: 1.25;
 		text-decoration: none;
 	}
 
-	.media-thumb {
-		border: 1px solid rgba(114, 176, 255, 0.26);
-		overflow: hidden;
-		position: relative;
+	.media-link-item a:hover {
+		color: #d5f4ff;
+		text-decoration: underline;
 	}
 
-	.media-thumb img {
-		aspect-ratio: 16 / 9;
-		display: block;
-		object-fit: cover;
-		width: 100%;
-	}
-
-	.media-play {
-		align-items: center;
-		background: rgba(2, 8, 20, 0.66);
-		border: 1px solid rgba(153, 220, 255, 0.62);
-		border-radius: 999px;
-		color: #f0fbff;
-		display: inline-flex;
-		font-size: 0.8rem;
-		font-weight: 700;
-		height: 1.6rem;
-		justify-content: center;
-		left: 0.45rem;
-		position: absolute;
-		top: 0.45rem;
-		width: 1.6rem;
-	}
-
-	.media-card p {
+	.media-link-item p {
 		color: var(--text-soft);
-		font-size: 0.84rem;
-		line-height: 1.35;
+		font-size: 0.8rem;
+		line-height: 1.34;
 		margin: 0;
 	}
 
-	.media-card h3 {
-		font-size: 0.96rem;
-		line-height: 1.25;
-		margin: 0;
-	}
-
-	.media-link:hover .media-thumb img {
-		transform: scale(1.02);
-		transition: transform 0.2s ease;
-	}
-
-	.media-link:hover h3 {
-		color: #bdefff;
+	.media-source {
+		color: #84bee8;
+		font-size: 0.76rem;
+		letter-spacing: 0.01em;
+		opacity: 0.95;
 	}
 
 	.project-card {
@@ -2132,7 +2377,7 @@ const mediaFeatures: VideoFeature[] = [
 		stroke: rgba(4, 12, 28, 0.58);
 		stroke-width: 1;
 		transform-origin: 60px 60px;
-		transition: transform 0.22s ease, stroke 0.2s ease, opacity 0.2s ease;
+		transition: transform 0.22s ease, stroke 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 	}
 
 	.pie-slice:hover {
@@ -2140,6 +2385,7 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.pie-slice.is-active {
+		filter: brightness(1.08);
 		stroke: rgba(224, 245, 255, 0.95);
 		stroke-width: 1.45;
 	}
@@ -2150,18 +2396,74 @@ const mediaFeatures: VideoFeature[] = [
 		stroke-width: 1.7;
 	}
 
-	.skills-center-total {
-		fill: #e9f8ff;
-		font-size: 9px;
-		font-weight: 700;
-		letter-spacing: 0.02em;
+	.pie-slice:focus {
+		outline: none;
 	}
 
-	.skills-center-label {
-		fill: #8fc4f0;
-		font-size: 4.5px;
-		letter-spacing: 0.16em;
-		text-transform: uppercase;
+	.pie-area-label {
+		fill: rgba(238, 249, 255, 0.98);
+		font-size: 3.35px;
+		font-weight: 700;
+		letter-spacing: 0.01em;
+		pointer-events: none;
+		text-shadow: 0 1px 1px rgba(2, 9, 24, 0.45);
+		user-select: none;
+	}
+
+	.skills-detail {
+		background: rgba(6, 20, 48, 0.62);
+		border: 1px solid rgba(122, 188, 255, 0.3);
+		border-radius: 0.42rem;
+		display: grid;
+		gap: 0.45rem;
+		opacity: 0;
+		padding: 0.58rem;
+		transform: scale(0.92);
+		transform-origin: top center;
+		transition: opacity 0.24s ease, transform 0.24s ease, border-color 0.24s ease;
+	}
+
+	.skills-detail.is-active {
+		border-color: rgba(172, 226, 255, 0.68);
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	.skills-detail-title {
+		font-size: 0.82rem;
+		font-weight: 700;
+		margin: 0 !important;
+		text-align: center;
+	}
+
+	.skills-detail-pie {
+		display: block;
+		margin: 0 auto;
+		max-width: 20rem;
+		overflow: visible;
+		width: 100%;
+	}
+
+	.skill-detail-slice {
+		stroke: rgba(2, 10, 24, 0.62);
+		stroke-width: 0.8;
+		transition: filter 0.2s ease, transform 0.2s ease;
+	}
+
+	.skill-detail-slice:hover {
+		filter: brightness(1.12);
+	}
+
+	.skill-detail-label {
+		fill: rgba(239, 249, 255, 0.98);
+		font-size: 3.15px;
+		font-weight: 700;
+		pointer-events: none;
+		stroke: rgba(2, 10, 24, 0.75);
+		stroke-width: 0.42;
+		paint-order: stroke;
+		text-rendering: geometricPrecision;
+		user-select: none;
 	}
 
 	.skills-hint {
@@ -2446,7 +2748,7 @@ const mediaFeatures: VideoFeature[] = [
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
-		.media-grid {
+		.media-groups-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
@@ -2485,7 +2787,7 @@ const mediaFeatures: VideoFeature[] = [
 		.project-grid,
 		.education-grid,
 		.leadership-grid,
-		.media-grid {
+		.media-groups-grid {
 			grid-template-columns: 1fr;
 		}
 

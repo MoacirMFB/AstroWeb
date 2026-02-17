@@ -2,16 +2,18 @@
 interface Props {
 	title?: string;
 	description?: string;
+	lang?: string;
 }
 
 const {
 	title = 'Moacir Fonseca Becker',
 	description = 'Space-driven innovation, aerospace projects, and collaboration opportunities.',
+	lang = 'en',
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />

@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '../../layouts/Layout.astro';
 
 type LinkItem = {
 	label: string;
@@ -86,22 +86,22 @@ type SkillArea = {
 };
 
 const navLinks: LinkItem[] = [
-	{ label: 'About', href: '#about' },
-	{ label: 'Projects', href: '#portfolio' },
-	{ label: 'Awards', href: '#awards' },
-	{ label: 'Skills', href: '#skills' },
-	{ label: 'Leadership', href: '#leadership' },
-	{ label: 'Education', href: '#education' },
-	{ label: 'Publications', href: '#publications' },
-	{ label: 'Media', href: '#media-interviews' },
-	{ label: 'Contact', href: '#contact' },
+	{ label: 'Sobre mí', href: '#about' },
+	{ label: 'Proyectos', href: '#portfolio' },
+	{ label: 'Premios', href: '#awards' },
+	{ label: 'Habilidades', href: '#skills' },
+	{ label: 'Liderazgo', href: '#leadership' },
+	{ label: 'Educación', href: '#education' },
+	{ label: 'Publicaciones', href: '#publications' },
+	{ label: 'Medios', href: '#media-interviews' },
+	{ label: 'Contacto', href: '#contact' },
 ];
 
 const heroParagraphs = [
-	"I'm Moacir Fonseca Becker, a passionate advocate for progress through space-driven innovation and education.",
-	'I hold an MS in Aeronautics and Astronautics from Purdue University and am currently in my second year of PhD studies in the same field. With a dual background in mechanical and electrical engineering, I have a deep enthusiasm for space exploration and have pioneered significant space projects in Central America.',
-	'My mission is to make a meaningful impact on our world by contributing to the advancement of space exploration.',
-	"I am also dedicated to inspiring the next generation. I offer free talks about aerospace engineering and my career path to students aged 15-18 in their last or second-to-last years of high school. If you're interested, please contact me.",
+	'Soy Moacir Fonseca Becker, un apasionado promotor del progreso a través de la innovación y la educación impulsadas por el espacio.',
+	'Tengo una maestría en Aeronáutica y Astronáutica de Purdue University y actualmente curso mi segundo año de doctorado en el mismo campo. Con formación dual en ingeniería mecánica y eléctrica, siento un gran entusiasmo por la exploración espacial y he impulsado proyectos espaciales significativos en Centroamérica.',
+	'Mi misión es generar un impacto positivo en nuestro mundo contribuyendo al avance de la exploración espacial.',
+	'También estoy comprometido con inspirar a la próxima generación. Ofrezco charlas gratuitas sobre ingeniería aeroespacial y mi trayectoria profesional para estudiantes de 15 a 18 años de secundaria. Si te interesa, contáctame.',
 ];
 
 const getYouTubeId = (url: string): string | null => {
@@ -197,10 +197,10 @@ const getProjectEra = (year: string): 'recent' | 'legacy' => {
 const mediaKindLabels: Record<MediaKind, string> = {
 	podcast: 'Podcast',
 	video: 'Video',
-	news: 'News',
-	official: 'Official',
-	outreach: 'Outreach',
-	profile: 'Profile',
+	news: 'Noticias',
+	official: 'Oficial',
+	outreach: 'Divulgación',
+	profile: 'Perfil',
 };
 
 const publicationNameSplitRegex = /(Becker,\s*M\.F\.|Moacir\s+Fonseca(?:[-\s])?Becker)/gi;
@@ -865,7 +865,11 @@ const externalMediaCategories: MediaCategory[] = [
 ];
 ---
 
-<Layout title="Moacir Fonseca Becker">
+<Layout
+	title="Moacir Fonseca Becker"
+	lang="es"
+	description="Innovación impulsada por el espacio, proyectos aeroespaciales y oportunidades de colaboración."
+>
 	<main class="page">
 		<div class="aurora" aria-hidden="true">
 			<span class="bg-image-layer"></span>
@@ -875,10 +879,10 @@ const externalMediaCategories: MediaCategory[] = [
 		</div>
 
 		<header class="site-header">
-			<a class="brand" href="#about" aria-label="Go to top">
+			<a class="brand" href="#about" aria-label="Ir al inicio">
 				<span class="brand-name">Moacir Fonseca Becker</span>
 			</a>
-			<nav aria-label="Primary navigation">
+			<nav aria-label="Navegación principal">
 				<ul>
 					{
 						navLinks.map((item) => (
@@ -892,8 +896,8 @@ const externalMediaCategories: MediaCategory[] = [
 					type="button"
 					class="theme-toggle"
 					data-theme-toggle
-					aria-label="Switch to light mode"
-					title="Switch to light mode"
+					aria-label="Cambiar a modo claro"
+					title="Cambiar a modo claro"
 				>
 					<span class="theme-icon theme-icon--sun" aria-hidden="true">
 						<svg viewBox="0 0 24 24" role="presentation">
@@ -914,14 +918,14 @@ const externalMediaCategories: MediaCategory[] = [
 						</svg>
 					</span>
 				</button>
-				<a class="language-toggle" href="/es/" aria-label="Cambiar a español">ES</a>
+				<a class="language-toggle" href="/" aria-label="Cambiar a inglés">EN</a>
 				<a
 					class="cv-link"
 					href="https://drive.google.com/file/d/1vwPQEI_GvsCVWiBJQ5meD143yRfUaTRw/view?usp=sharing"
 					target="_blank"
 					rel="noreferrer"
 				>
-					Resume and CV
+					Currículum
 				</a>
 			</div>
 		</header>
@@ -946,21 +950,21 @@ const externalMediaCategories: MediaCategory[] = [
 					/>
 				</aside>
 			</div>
-			<p class="thank-you">Thank you for coming!</p>
+			<p class="thank-you">¡Gracias por visitar mi sitio!</p>
 		</section>
 
 		<section id="portfolio" class="section-shell">
 				<div class="section-header">
-					<h2>Projects Portfolio</h2>
+					<h2>Portafolio de Proyectos</h2>
 				</div>
 
-			<div class="portfolio-toolbar" role="toolbar" aria-label="Project filters">
-				<button type="button" class="filter-button is-active" data-filter="all">All Projects</button>
-				<button type="button" class="filter-button" data-filter="recent">{`Recent (${RECENT_PROJECT_START_YEAR}+)`}</button>
-				<button type="button" class="filter-button" data-filter="legacy">Legacy</button>
-				<button type="button" class="filter-button" data-filter="video">With Video</button>
+			<div class="portfolio-toolbar" role="toolbar" aria-label="Filtros de proyectos">
+				<button type="button" class="filter-button is-active" data-filter="all">Todos los Proyectos</button>
+				<button type="button" class="filter-button" data-filter="recent">{`Recientes (${RECENT_PROJECT_START_YEAR}+)`}</button>
+				<button type="button" class="filter-button" data-filter="legacy">Anteriores</button>
+				<button type="button" class="filter-button" data-filter="video">Con Video</button>
 			</div>
-			<p class="portfolio-count" data-project-count>Showing {projects.length} projects</p>
+			<p class="portfolio-count" data-project-count>Mostrando {projects.length} proyectos</p>
 
 			<div class="project-grid">
 				{
@@ -972,14 +976,14 @@ const externalMediaCategories: MediaCategory[] = [
 						>
 								<div class="card-header">
 									<p class="year">{project.year}</p>
-									{project.video && <span class="video-chip">Video Preview</span>}
+									{project.video && <span class="video-chip">Vista previa en video</span>}
 								</div>
 								<h3>{project.title}</h3>
 								<p>{project.summary}</p>
 								{
 									project.highlights && (
 										<div class="project-contrib">
-											<button type="button" class="project-contrib-trigger">Key Contributions</button>
+											<button type="button" class="project-contrib-trigger">Aportes clave</button>
 											<div class="project-contrib-popover" role="tooltip">												
 												<ul class="project-contrib-list">
 												{project.highlights.map((item) => (
@@ -1003,18 +1007,18 @@ const externalMediaCategories: MediaCategory[] = [
 														type="button"
 														class="carousel-control"
 														data-carousel-prev
-														aria-label={`Previous item for ${project.title}`}
+														aria-label={`Elemento anterior de ${project.title}`}
 													>
 														‹
 													</button>
-														<div class="project-gallery" role="region" aria-label={`${project.title} media carousel`}>
+														<div class="project-gallery" role="region" aria-label={`Carrusel multimedia de ${project.title}`}>
 															{carouselItems.map((item, index) => (
 																<figure
 																	class={`gallery-item ${item.type === 'video' ? 'gallery-item--video ' : ''}${index === 0 ? 'is-active' : ''}`}
 																	data-carousel-slide
 																	data-lightbox-kind={item.type}
 																	data-lightbox-src={item.type === 'video' ? getEmbedUrl(item.video) : item.image.src}
-																	data-lightbox-alt={item.type === 'video' ? `${project.title} video preview` : item.image.alt}
+																	data-lightbox-alt={item.type === 'video' ? `Vista previa en video de ${project.title}` : item.image.alt}
 																	aria-hidden={index === 0 ? 'false' : 'true'}
 																>
 																	{
@@ -1027,14 +1031,14 @@ const externalMediaCategories: MediaCategory[] = [
 																						data-gallery-video-open
 																						role="button"
 																						tabindex="0"
-																						aria-label={`Click to expand video for ${project.title}`}
+																						aria-label={`Haz clic para ampliar el video de ${project.title}`}
 																					>
 																						{
 																							posterSrc ? (
 																								<img
 																									class="gallery-video-thumb"
 																									src={posterSrc}
-																									alt={`${project.title} video thumbnail`}
+																									alt={`Miniatura de video de ${project.title}`}
 																									loading="eager"
 																									decoding="async"
 																								/>
@@ -1063,7 +1067,7 @@ const externalMediaCategories: MediaCategory[] = [
 														type="button"
 														class="carousel-control"
 														data-carousel-next
-														aria-label={`Next item for ${project.title}`}
+														aria-label={`Elemento siguiente de ${project.title}`}
 													>
 														›
 													</button>
@@ -1074,7 +1078,7 @@ const externalMediaCategories: MediaCategory[] = [
 																	type="button"
 																	class={`carousel-dot ${index === 0 ? 'is-active' : ''}`}
 																	data-carousel-dot
-																	aria-label={`Go to item ${index + 1}`}
+																	aria-label={`Ir al elemento ${index + 1}`}
 																	aria-selected={index === 0 ? 'true' : 'false'}
 																></button>
 															))
@@ -1103,7 +1107,7 @@ const externalMediaCategories: MediaCategory[] = [
 								project.video && !project.videoInCarousel && (
 									<div class="video-wrap">
 										<iframe
-											title={`${project.title} video preview`}
+											title={`Vista previa en video de ${project.title}`}
 											src={getEmbedUrl(project.video)}
 											loading="lazy"
 											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -1121,7 +1125,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 		<section id="awards" class="section-shell">
 			<div class="section-header">
-				<h2>Achievements and Awards</h2>				
+				<h2>Logros y Premios</h2>				
 			</div>
 			<ul class="award-list">
 				{
@@ -1140,7 +1144,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 		<section id="skills" class="section-shell">
 			<div class="section-header">
-				<h2>Skills</h2>
+				<h2>Habilidades</h2>
 			</div>
 			<div class="skills-chart-shell" data-skills-chart>
 				<div class="skills-visual">
@@ -1148,7 +1152,7 @@ const externalMediaCategories: MediaCategory[] = [
 						class="skills-sunburst"
 						viewBox="0 0 340 340"
 						role="img"
-						aria-label="Interactive skills sunburst"
+						aria-label="Gráfico interactivo de habilidades"
 						data-skills-sunburst
 					></svg>
 				</div>
@@ -1194,7 +1198,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 		<section id="leadership" class="section-shell">
 			<div class="section-header">
-				<h2>Leadership</h2>
+				<h2>Liderazgo</h2>
 			</div>
 			<div class="leadership-grid">
 				{
@@ -1225,7 +1229,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 		<section id="education" class="section-shell">
 			<div class="section-header">
-				<h2>Education</h2>
+				<h2>Educación</h2>
 			</div>
 			<div class="education-grid">
 				{
@@ -1249,7 +1253,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 			<section id="publications" class="section-shell">
 				<div class="section-header">
-					<h2>Publications</h2>
+					<h2>Publicaciones</h2>
 				</div>
 					<ol class="publication-list">
 						{
@@ -1287,7 +1291,7 @@ const externalMediaCategories: MediaCategory[] = [
 													)}
 													{item.url && (
 														<a href={item.url} target="_blank" rel="noreferrer">
-															{item.urlLabel || 'Link'}
+															{item.urlLabel || 'Enlace'}
 														</a>
 													)}
 												</span>
@@ -1302,7 +1306,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 			<section id="media-interviews" class="section-shell">
 				<div class="section-header">
-					<h2>External Media Links</h2>					
+					<h2>Enlaces Externos en Medios</h2>					
 				</div>
 				<svg class="media-icon-defs" aria-hidden="true" focusable="false">
 					<symbol id="icon-podcast" viewBox="0 0 24 24">
@@ -1372,7 +1376,7 @@ const externalMediaCategories: MediaCategory[] = [
 													}
 													<div class="media-link-content">
 														<p class="media-link-meta">
-															<span class="media-source">Source: {item.source}</span>
+															<span class="media-source">Fuente: {item.source}</span>
 														</p>
 														<a class="media-link-title" href={item.href} target="_blank" rel="noreferrer">
 															{item.title}
@@ -1391,13 +1395,13 @@ const externalMediaCategories: MediaCategory[] = [
 			</section>
 
 		<section id="contact" class="contact">
-			<h2>Would you like to collaborate?</h2>
-			<p>Please contact me below.</p>
+			<h2>¿Te gustaría colaborar?</h2>
+			<p>Contáctame a continuación.</p>
 
 			<div class="contact-layout">
 				<div class="map-wrap">
 					<iframe
-						title="West Lafayette map"
+						title="Mapa de West Lafayette"
 						src="https://maps.google.com/maps?q=west%20lafayette%2C%20indiana&t=m&z=13&output=embed&iwloc=near"
 						loading="lazy"
 						referrerpolicy="strict-origin-when-cross-origin"
@@ -1406,16 +1410,16 @@ const externalMediaCategories: MediaCategory[] = [
 
 					<div class="contact-grid">
 						<article>
-							<h3>Location</h3>
+							<h3>Ubicación</h3>
 							<p>West Lafayette, Indiana</p>
 						</article>
 						<article>
-							<h3>Email</h3>
+							<h3>Correo</h3>
 							<p><a href="mailto:moacirmabe@gmail.com">moacirmabe@gmail.com</a></p>
 							<p><a href="mailto:mfonsec@purdue.edu">mfonsec@purdue.edu</a></p>
 						</article>
 					<article>
-						<h3>Social</h3>
+						<h3>Redes</h3>
 						<div class="social-links">
 							<a
 								class="social-link"
@@ -1473,7 +1477,7 @@ const externalMediaCategories: MediaCategory[] = [
 					type="button"
 					class="lightbox-close"
 					data-lightbox-close
-					aria-label="Close expanded image"
+					aria-label="Cerrar imagen ampliada"
 				>
 					×
 				</button>
@@ -1481,7 +1485,7 @@ const externalMediaCategories: MediaCategory[] = [
 					type="button"
 					class="lightbox-control lightbox-control--prev"
 					data-lightbox-prev
-					aria-label="Previous expanded image"
+					aria-label="Imagen ampliada anterior"
 				>
 					‹
 				</button>
@@ -1489,7 +1493,7 @@ const externalMediaCategories: MediaCategory[] = [
 					type="button"
 					class="lightbox-control lightbox-control--next"
 					data-lightbox-next
-					aria-label="Next expanded image"
+					aria-label="Imagen ampliada siguiente"
 				>
 					›
 				</button>
@@ -1499,7 +1503,7 @@ const externalMediaCategories: MediaCategory[] = [
 						<iframe
 							data-lightbox-video
 							src=""
-							title="Expanded project video"
+							title="Video del proyecto ampliado"
 							loading="lazy"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 							referrerpolicy="strict-origin-when-cross-origin"
@@ -1547,7 +1551,8 @@ const externalMediaCategories: MediaCategory[] = [
 					return;
 				}
 				const nextTheme = theme === 'light' ? 'dark' : 'light';
-				const label = `Switch to ${nextTheme} mode`;
+				const nextThemeLabel = nextTheme === 'light' ? 'claro' : 'oscuro';
+				const label = `Cambiar a modo ${nextThemeLabel}`;
 				themeToggle.setAttribute('aria-label', label);
 				themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
 				themeToggle.setAttribute('title', label);
@@ -1624,8 +1629,8 @@ const externalMediaCategories: MediaCategory[] = [
 					}
 				});
 
-				const label = visibleCount === 1 ? 'project' : 'projects';
-				countTarget.textContent = `Showing ${visibleCount} ${label}`;
+				const label = visibleCount === 1 ? 'proyecto' : 'proyectos';
+				countTarget.textContent = `Mostrando ${visibleCount} ${label}`;
 			};
 
 			if (hasProjectFilters) {
@@ -1731,7 +1736,7 @@ const externalMediaCategories: MediaCategory[] = [
 						lightboxImage.setAttribute('alt', '');
 						lightboxVideoWrap.removeAttribute('hidden');
 						lightboxVideo.setAttribute('src', currentSlide.src);
-						lightboxVideo.setAttribute('title', currentSlide.alt || 'Expanded project video');
+						lightboxVideo.setAttribute('title', currentSlide.alt || 'Video del proyecto ampliado');
 					} else {
 						lightboxVideo?.setAttribute('src', '');
 						lightboxVideoWrap?.setAttribute('hidden', '');
@@ -2233,7 +2238,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 	:global(html[data-theme='light'] body) {
 		--bg: #ffffff;
-		--bg-soft: #da1d1d;
+		--bg-soft: #f7fbff;
 		--surface: rgba(255, 255, 255, 0.88);
 		--surface-2: rgba(248, 252, 255, 0.92);
 		--card: rgba(255, 255, 255, 0.88);
@@ -3203,7 +3208,7 @@ const externalMediaCategories: MediaCategory[] = [
 		border: 1px solid rgba(154, 220, 255, 0.8);
 		border-radius: 999px;
 		color: #f1fbff;
-		content: 'Click to expand';
+		content: 'Haz clic para ampliar';
 		font-size: 0.74rem;
 		font-weight: 700;
 		left: 50%;

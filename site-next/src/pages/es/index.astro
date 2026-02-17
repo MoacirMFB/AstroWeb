@@ -98,9 +98,9 @@ const navLinks: LinkItem[] = [
 ];
 
 const heroParagraphs = [
-	'Soy Moacir Fonseca Becker, un apasionado promotor del progreso a través de la innovación y la educación impulsadas por el espacio.',
-	'Tengo una maestría en Aeronáutica y Astronáutica de Purdue University y actualmente curso mi segundo año de doctorado en el mismo campo. Con formación dual en ingeniería mecánica y eléctrica, siento un gran entusiasmo por la exploración espacial y he impulsado proyectos espaciales significativos en Centroamérica.',
-	'Mi misión es generar un impacto positivo en nuestro mundo contribuyendo al avance de la exploración espacial.',
+	'Soy Moacir Fonseca Becker, apasionado por el espacio desde que tengo memoria 😃. Mi deseo es el de promover el progreso de la humanidad a través de la innovación y la educación que el desarrollo espacial pueden impulsar.',
+
+	'Tengo una maestría en Aeronáutica y Astronáutica de Purdue University y actualmente curso mi segundo año de doctorado en el mismo campo y universidad. Poseo también una formación dual en ingeniería mecánica y eléctrica,  y he impulsado proyectos espaciales en Centroamérica.', 	'Mi misión es generar un impacto positivo en nuestro mundo contribuyendo al avance de la exploración espacial.',
 	'También estoy comprometido con inspirar a la próxima generación. Ofrezco charlas gratuitas sobre ingeniería aeroespacial y mi trayectoria profesional para estudiantes de 15 a 18 años de secundaria. Si te interesa, contáctame.',
 ];
 
@@ -229,13 +229,13 @@ const projects: ProjectCard[] = [
 			year: '2025',
 			title: 'Gateway State Estimation via Moon-Horizon Optical Navigation',
 		summary:
-			'Estimated Gateway state in NRHO using only Moon-horizon imagery with CR3BP dynamics, reducing dependence on ground tracking.',
+			'Estimacion del estado de Gateway en NRHO usando solo imagenes del horizonte lunar con dinamica CR3BP, reduciendo la dependencia del seguimiento desde tierra.',
 		highlights: [
-			'Built a synthetic imaging pipeline with limb detection and conic fitting for navigation measurements.',
-			'Implemented Christian-Robinson OPNAV with EKF/UKF filtering.',
-			'Achieved km-level position and m/s-level velocity accuracy in cislunar multi-body regimes.',
+			'Desarrollo de una tuberia de imagenes sinteticas con deteccion de borde lunar y ajuste conico para mediciones de navegacion.',
+			'Implementacion de OPNAV de Christian-Robinson con filtrado EKF/UKF.',
+			'Logro de precision de posicion a nivel de kilometros y velocidad a nivel de m/s en regimenes cislunares de multiples cuerpos.',
 			],
-			note: 'Completed as part of AAE590 PET (2025) at Purdue University.',
+			note: 'Completado como parte de AAE590 PET (2025) en Purdue University.',
 				images: [
 					{ src: '/projects/AAE590PET1.png', alt: 'AAE590 PET project figure 1' },
 					{ src: '/projects/AAE590PET2.png', alt: 'AAE590 PET project figure 2' },
@@ -250,13 +250,13 @@ const projects: ProjectCard[] = [
 			year: '2024',
 			title: 'Distributed Consensus and Control for Multi-Satellite Debris Rendezvous',
 		summary:
-			'Designed a distributed estimation-and-control framework for cooperative rendezvous with large debris under J2-perturbed dynamics.',
+			'Diseno de un marco distribuido de estimacion y control para rendezvous cooperativo con desechos grandes bajo dinamica perturbada por J2.',
 		highlights: [
-			'Developed distributed EKF with Metropolis consensus for a 10-spacecraft Envisat case study.',
-			'Achieved network-wide convergence in 11 iterations with 0.33 m position and 0.006 m/s velocity mean errors.',
-			'Implemented PD guidance enabling meter-level rendezvous in 600 s with ΔV below 50 m/s per agent.',
+			'Desarrollo de EKF distribuido con consenso de Metropolis para un estudio de caso Envisat con 10 naves espaciales.',
+			'Convergencia en toda la red en 11 iteraciones con errores medios de 0.33 m en posicion y 0.006 m/s en velocidad.',
+			'Implementacion de guiado PD que permitio rendezvous a nivel de metros en 600 s con ΔV inferior a 50 m/s por agente.',
 			],
-			note: 'Completed as part of AAE590 MAAC (2024) at Purdue University.',
+			note: 'Completado como parte de AAE590 MAAC (2024) en Purdue University.',
 			images: [
 				{ src: '/projects/AAE590MAAC1.png', alt: 'AAE590 MAAC project figure 1' },
 				{ src: '/projects/AAE590MAAC2.png', alt: 'AAE590 MAAC project figure 2' },
@@ -271,13 +271,13 @@ const projects: ProjectCard[] = [
 			year: '2024',
 			title: 'Model Predictive Control for Direct Moon Landing from LPO',
 		summary:
-			'Developed a convex MPC framework for direct transfers from Libration Point Orbits to targeted lunar surface landing sites.',
+			'Desarrollo de un marco MPC convexo para transferencias directas desde orbitas de puntos de libracion hacia sitios de alunizaje lunar objetivos.',
 		highlights: [
-			'Focused on precision landing scenarios near the lunar south pole.',
-			'Implemented conditional collision constraints within a linearized CR3BP dynamics model.',
-			'Demonstrated trajectory tracking and perturbation adaptation using state and control penalty tuning.',
+			'Enfoque en escenarios de alunizaje de precision cerca del polo sur lunar.',
+			'Implementacion de restricciones condicionales de colision dentro de un modelo de dinamica CR3BP linealizado.',
+			'Demostracion de seguimiento de trayectoria y adaptacion a perturbaciones mediante ajuste de penalizaciones de estado y control.',
 			],
-			note: 'Completed as part of AAE590 Advanced Control Applications (2024) at Purdue University.',
+			note: 'Completado como parte de AAE590 Advanced Control Applications (2024) en Purdue University.',
 			images: [
 				{ src: '/projects/AAE590ACA1.png', alt: 'AAE590 ACA project figure 1' },
 				{ src: '/projects/AAE590ACA2.png', alt: 'AAE590 ACA project figure 2' },
@@ -289,21 +289,21 @@ const projects: ProjectCard[] = [
 		year: '2023',
 		title: 'Orbital pursuer evasion game with incomplete information - class project',
 		summary:
-			'This project tackles orbital pursuit-evasion, where a spacecraft must capture a moving target in orbit while dealing with incomplete information.',
+			'Este proyecto aborda un juego orbital de persecucion-evasion, donde una nave debe capturar un objetivo en movimiento en orbita con informacion incompleta.',
 		highlights: [
-			'Used Unscented Kalman Filter estimation for evader state and strategy inference.',
-			'Compared complete-information, zero-sum, and UKF-informed control approaches.',
-			'Modeled dynamics with Euler-Hill equations for realistic debris-like scenarios.',
+			'Uso de estimacion con Filtro de Kalman Unscented para inferir el estado y la estrategia del evasor.',
+			'Comparacion entre enfoques de control con informacion completa, juego de suma cero y control informado por UKF.',
+			'Modelado de la dinamica con ecuaciones de Euler-Hill para escenarios realistas tipo desechos.',
 		],
-		note: 'Completed as part of Optimal Control and Estimation (AAE5980) at Purdue University.',
+		note: 'Completado como parte de Optimal Control and Estimation (AAE5980) en Purdue University.',
 		video: { url: 'https://youtu.be/qDNzvLLw9oo' },
 	},
 	{
 		year: '2023',
 		title: 'Using Cycle-Consistent Adversarial Networks translation to color surface images of Mars',
 		summary:
-			'Machine learning project focused on translating Mars surface imagery into color representations using CycleGAN methods.',
-		note: 'Completed as part of Machine Learning (STAT598 / ECE595) at Purdue University.',
+			'Proyecto de aprendizaje automatico enfocado en traducir imagenes de la superficie de Marte a representaciones en color mediante metodos CycleGAN.',
+		note: 'Completado como parte de Machine Learning (STAT598 / ECE595) en Purdue University.',
 		links: [{ label: 'GitHub Repository', href: 'https://github.com/MoacirMFB/Mars_CycleGAN' }],
 		images: [
 			{ src: '/projects/A1-1536x887.png', alt: 'CycleGAN Mars translation sample A1' },
@@ -320,13 +320,13 @@ const projects: ProjectCard[] = [
 		year: '2023',
 		title: 'Distributed machine learning across AI companies - class project',
 		summary:
-			'This project studied distributed machine learning in a system-of-systems context, modeled as collaborating AI companies with different data and network roles.',
+			'Este proyecto estudio aprendizaje automatico distribuido en un contexto de sistemas de sistemas, modelado como empresas de IA colaborando con distintos roles de datos y red.',
 		highlights: [
-			'Analyzed the effect of topology and data diversity on model quality.',
-			'Implemented a three-phase process: local training, parameter sharing, and aggregation.',
-			'Observed links between node centrality and model accuracy variance.',
+			'Analisis del efecto de la topologia y la diversidad de datos sobre la calidad del modelo.',
+			'Implementacion de un proceso de tres fases: entrenamiento local, comparticion de parametros y agregacion.',
+			'Observacion de relaciones entre la centralidad de nodos y la variacion en la precision del modelo.',
 		],
-		note: 'Completed as part of Systems of Systems (AAE56000) at Purdue University.',
+		note: 'Completado como parte de Systems of Systems (AAE56000) en Purdue University.',
 		images: [
 			{
 				src: '/projects/560_Project_2-1-1024x630.png',
@@ -342,11 +342,11 @@ const projects: ProjectCard[] = [
 		year: '2019-22',
 		title: 'Morazan Project - the 1st Central American satellite built through regional collaboration',
 		summary:
-			'Led planning, requirements, and technical coordination for a regional satellite effort across space and ground segments.',
+			'Liderazgo en planificacion, requisitos y coordinacion tecnica para un esfuerzo satelital regional en segmentos espacial y terrestre.',
 		highlights: [
-			'Coordinated internal and external stakeholders including JAXA and UNOOSA.',
-			'Defined around 200 mission, system, and subsystem requirements.',
-			'Implemented secure cloud documentation workflows and mentored subsystem teams.',
+			'Coordinacion de actores internos y externos, incluyendo JAXA y UNOOSA.',
+			'Definicion de alrededor de 200 requisitos de mision, sistema y subsistemas.',
+			'Implementacion de flujos seguros de documentacion en la nube y mentoria a equipos de subsistemas.',
 		],
 		links: [
 			{ label: 'Project site', href: 'http://www.proyectomorazan.space/' },
@@ -359,11 +359,11 @@ const projects: ProjectCard[] = [
 		year: '2018-19',
 		title: 'Reusable Space Station mission concept for active debris removal in low Earth orbit',
 		summary:
-			'Developed during the ISU Space Studies Program (ESA sponsored), this mission concept addressed active debris removal with eco-design and concurrent engineering principles.',
+			'Desarrollado durante el ISU Space Studies Program (patrocinado por ESA), este concepto de mision abordo la remocion activa de desechos con principios de ecodiseno e ingenieria concurrente.',
 		highlights: [
-			'Developed a Phase-0 design for a robotic manipulator concept.',
-			'Contributed CAD representations for station-level mission architecture.',
-			'Led development of a feasible business case for sun-synchronous debris removal.',
+			'Desarrollo de un diseno Fase-0 para un concepto de manipulador robotico.',
+			'Contribucion de representaciones CAD para la arquitectura de mision a nivel de estacion.',
+			'Liderazgo en el desarrollo de un caso de negocio viable para remocion de desechos en orbita heliosincrona.',
 		],
 		links: [
 			{
@@ -377,11 +377,11 @@ const projects: ProjectCard[] = [
 		year: '2016-17',
 		title: 'Effect of non-inertial forces over two robotic arms under reduced (artificial) gravity',
 		summary:
-			'After winning the 3rd UNOOSA DropTES cycle, this project executed robotics experiments under microgravity and rotation-induced gravity conditions at ZARM.',
+			'Tras ganar el 3er ciclo UNOOSA DropTES, este proyecto ejecuto experimentos de robotica bajo microgravedad y condiciones de gravedad inducida por rotacion en ZARM.',
 		highlights: [
-			'Led a multidisciplinary five-person team under strict technical and schedule constraints.',
-			'Designed and ran a robotic-arm experiment at the Center of Applied Space Technology and Microgravity.',
-			'Presented resulting dynamics analysis at the International Astronautical Congress in Adelaide.',
+			'Liderazgo de un equipo multidisciplinario de cinco personas bajo estrictas restricciones tecnicas y de cronograma.',
+			'Diseno y ejecucion de un experimento de brazo robotico en el Center of Applied Space Technology and Microgravity.',
+			'Presentacion del analisis dinamico resultante en el International Astronautical Congress en Adelaide.',
 		],
 		links: [
 			{
@@ -395,11 +395,11 @@ const projects: ProjectCard[] = [
 		year: '2016-17',
 		title: 'MultiGAS - autonomous remote volcanic gas monitoring station',
 		summary:
-			'Designed, built, validated, and deployed an autonomous gas monitoring station for harsh volcanic environments.',
+			'Diseno, construccion, validacion y despliegue de una estacion autonoma de monitoreo de gases para entornos volcanicos exigentes.',
 		highlights: [
-			'System measured CO2, H2S, O2, H2, water vapor, temperature, and pressure.',
-			'Combined solar and wind power for multi-year autonomous operation.',
-			'Enabled telemetry over distances above 40 km.',
+			'El sistema midio CO2, H2S, O2, H2, vapor de agua, temperatura y presion.',
+			'Combinacion de energia solar y eolica para operacion autonoma de varios anos.',
+			'Habilitacion de telemetria a distancias superiores a 40 km.',
 		],
 		links: [{ label: 'Gaslab YouTube Channel', href: 'https://www.youtube.com/user/GasLabUCR' }],
 		video: { url: 'https://youtu.be/BTOVRnA9cMQ' },
@@ -408,11 +408,11 @@ const projects: ProjectCard[] = [
 		year: '2015-16',
 		title: 'MINIGAS LITE - airborne volcanic activity monitoring system',
 		summary:
-			'Airborne gas-monitoring platform tested at Kilauea with RF telemetry integration.',
+			'Plataforma aerotransportada de monitoreo de gases probada en Kilauea con integracion de telemetria RF.',
 		highlights: [
-			'Designed PCB integration of CO2, SO2, and H2S sensors on STM32-F4.',
-			'Built radiosonde telemetry chain using Arduino and iMet-1 RSB hardware.',
-			'Validated stratospheric balloon deployment workflow for volcanic measurement.',
+			'Diseno de integracion PCB de sensores CO2, SO2 y H2S sobre STM32-F4.',
+			'Construccion de una cadena de telemetria de radiosonda usando Arduino y hardware iMet-1 RSB.',
+			'Validacion del flujo de despliegue en globo estratosferico para medicion volcanica.',
 		],
 		links: [{ label: 'Gaslab YouTube Channel', href: 'https://www.youtube.com/user/GasLabUCR' }],
 		video: { url: 'https://www.youtube.com/watch?v=-EJzZnKS7g4' },
@@ -421,10 +421,10 @@ const projects: ProjectCard[] = [
 		year: '2016',
 		title: 'Hexapod Robot Based on Arthropod Locomotion for Difficult Exploration Areas on Mars',
 		summary:
-			'Project from the first all-Latin-American MDRS analog mission focused on robust rover locomotion concepts.',
+			'Proyecto de la primera mision analogica MDRS integrada completamente por Latinoamerica, enfocado en conceptos robustos de locomocion de rover.',
 		highlights: [
-			'Designed, integrated, and tested the hexapod mechanical structure.',
-			'Used iterative engineering optimization and additive manufacturing methods.',
+			'Diseno, integracion y prueba de la estructura mecanica del hexapodo.',
+			'Uso de metodos iterativos de optimizacion de ingenieria y manufactura aditiva.',
 		],
 		links: [
 			{
@@ -445,11 +445,11 @@ const projects: ProjectCard[] = [
 		year: '2015',
 		title: 'In-flight control unit for a mass spectrometer and subsystems',
 		summary:
-			'Designed and programmed an ATmega-based in-flight control unit for volcanic research instrumentation.',
+			'Diseno y programacion de una unidad de control en vuelo basada en ATmega para instrumentacion de investigacion volcanica.',
 		highlights: [
-			'Enabled manual and automatic operation of mass spectrometer subsystems.',
-			'Integrated sensing for temperature, humidity, pressure, and airflow.',
-			'Managed turbomolecular pump control and mission power distribution.',
+			'Habilitacion de operacion manual y automatica de subsistemas de espectrometro de masas.',
+			'Integracion de sensado de temperatura, humedad, presion y flujo de aire.',
+			'Gestion del control de bomba turbomolecular y de la distribucion de energia de la mision.',
 		],
 		links: [{ label: 'Gaslab YouTube Channel', href: 'https://www.youtube.com/user/GasLabUCR' }],
 		images: [
@@ -466,10 +466,10 @@ const projects: ProjectCard[] = [
 		year: '2015-16',
 		title: 'Controller box for auto/manual control of hydraulic and pneumatic circuits',
 		summary:
-			'Developed a multipurpose relay-output module for laboratory hydraulic and pneumatic systems with programmable automation.',
+			'Desarrollo de un modulo multiproposito de salidas por relevadores para sistemas hidraulicos y neumaticos de laboratorio con automatizacion programable.',
 		highlights: [
-			'Integrated LabVIEW user interface for setup and operation.',
-			'Supported unattended multi-day autonomous operation.',
+			'Integracion de una interfaz de usuario en LabVIEW para configuracion y operacion.',
+			'Soporte de operacion autonoma sin supervision durante varios dias.',
 		],
 		links: [{ label: 'NTCR Consulting', href: 'http://www.ntcrconsulting.com/' }],
 		images: [{ src: '/projects/GasLab-p2-1-1024x768.jpg', alt: 'Controller box system hardware image' }],
@@ -478,11 +478,11 @@ const projects: ProjectCard[] = [
 		year: '2014',
 		title: 'Blink-controlled small prototype of a remote-controlled car',
 		summary:
-			'Designed a prototype remote-controlled car driven by EEG activity and blink-based input.',
+			'Diseno de un prototipo de carro a control remoto accionado por actividad EEG y comandos por parpadeo.',
 		highlights: [
-			'Processed real-time EEG with Fourier transforms for mental state detection.',
-			'Implemented control logic for blink-triggered vehicle operation.',
-			'Inspired assistive-technology spinoffs for children with physical disabilities.',
+			'Procesamiento de EEG en tiempo real con transformadas de Fourier para deteccion de estados mentales.',
+			'Implementacion de logica de control para operar el vehiculo mediante parpadeos.',
+			'Inspiracion para desarrollos de tecnologia asistiva dirigidos a ninos con discapacidad fisica.',
 		],
 		links: [{ label: 'NTCR Consulting', href: 'http://www.ntcrconsulting.com/' }],
 		video: { url: 'https://youtu.be/eaAdc4N_em0' },
@@ -491,7 +491,7 @@ const projects: ProjectCard[] = [
 		year: '2015',
 		title: 'Launch of the first solid-state rocket with a scientific payload in Costa Rica',
 		summary:
-			'Participated in launching a scientific payload mission to measure atmospheric variables in Costa Rica.',
+			'Participacion en el lanzamiento de una mision con carga util cientifica para medir variables atmosfericas en Costa Rica.',
 		links: [
 			{
 				label: 'University article',
@@ -503,73 +503,73 @@ const projects: ProjectCard[] = [
 ];
 
 const awards: AwardItem[] = [
-	{ title: '2024 - Somos Purdue Award' },
+	{ title: '2024 - Premio Somos Purdue' },
 	{
 		title:
-			'2023 - Selected Member for the first crew of the Student Analog Astronaut Training Program (Purdue SEARCH)',
+			'2023 - Miembro seleccionado para la primera tripulación del Student Analog Astronaut Training Program (Purdue SEARCH)',
 		href: 'https://www.linkedin.com/posts/moacirfb_satp-search-mars-activity-7088241964965326848-au9c?utm_source=share&utm_medium=member_desktop',
 	},
 	{
-		title: '2020 - 5th KiboCube Round Winner (UNOOSA and JAXA)',
+		title: '2020 - Ganador de la 5ta ronda de KiboCube (UNOOSA y JAXA)',
 		href: 'https://www.unoosa.org/oosa/en/informationfor/media/winner-of-5th-round-of-the-kibocube-programme-to-deploy-a-satellite-from-the-international-space-station-announced-and-opening-of-6th-round.html',
 	},
-	{ title: '2018 - Business Pitch Competition Winner, Business and Management Department (ISU)' },
-	{ title: '2017 - Finalist, Singularity University Costa Rica Global Impact Challenge' },
+	{ title: '2018 - Ganador del Business Pitch Competition, Departamento de Business and Management (ISU)' },
+	{ title: '2017 - Finalista, Singularity University Costa Rica Global Impact Challenge' },
 	{
-		title: '2016 - 3rd Campaign Winner, UNOOSA DropTES Fellowship Program',
+		title: '2016 - Ganador de la 3ra campana, UNOOSA DropTES Fellowship Program',
 		href: 'https://www.unoosa.org/oosa/en/ourwork/psa/hsti/capacity-building/droptes-third-cycle.html',
 	},
 	{
-		title: '2014 - 1st Place at RobotiFest, National Robotics Contest',
+		title: '2014 - 1er lugar en RobotiFest, concurso nacional de robotica',
 		href: 'https://www.ucr.ac.cr/noticias/2014/08/19/grandes-proyectos-salen-a-la-luz-en-robotifest-ucr.html',
 	},
-	{ title: '2013 and 2014 - Academic Excellence Scholarship, University of Costa Rica' },
+	{ title: '2013 y 2014 - Beca de excelencia academica, Universidad de Costa Rica' },
 	{
-		title: '2012 - US Department of State Scholarship Grantee, Global UGRAD Program',
+		title: '2012 - Becario del US Department of State, programa Global UGRAD',
 		href: 'https://issuu.com/worldlearning/docs/3._2012_-_2013_yearbook',
 	},
 	{
-		title: '2012 and 2014 - 2nd and 3rd Place at National Robot Olympiad',
+		title: '2012 y 2014 - 2do y 3er lugar en la Olimpiada Nacional de Robotica',
 		href: 'https://www.micit.go.cr/portaldos/index.php?option=com_content&view=article&id=6228:olimpiada-mundial-de-robotica-abre-las-puertas-a-talento-tico&catid=40&Itemid=1917',
 	},
 	{
-		title: '2009 and 2010 - Honorific Mention XII and XIII Costa Rican Physics Olympiads',
+		title: '2009 y 2010 - Mencion honorifica en las Olimpiadas Costarricenses de Fisica XII y XIII',
 		href: 'https://www.perezzeledon.net/generalenos-se-preparan-para-olimpiada-iberoamericana-de-fisica/',
 	},
-	{ title: '2010 - Math Olympiad Finalist' },
-	{ title: '2010 - Regional Science Fair Winner and National Science Fair Finalist' },
+	{ title: '2010 - Finalista de la Olimpiada de Matematica' },
+	{ title: '2010 - Ganador de la feria cientifica regional y finalista de la feria cientifica nacional' },
 ];
 
 const leadership: LeadershipItem[] = [
 	{
-		title: '2020 - Morazan Project, 1st Honduran satellite',
+		title: '2020 - Proyecto Morazan, primer satelite hondureno',
 		background: [
-			'Created initial work plans, organization models, and schedules for almost 40 students across project segments.',
-			'Coordinated bi-weekly subteam meetings to track progress, provide guidance, and maintain delivery rhythm.',
+			'Creacion de planes de trabajo iniciales, modelos de organizacion y cronogramas para casi 40 estudiantes distribuidos en los distintos segmentos del proyecto.',
+			'Coordinacion de reuniones quincenales con subequipos para dar seguimiento al progreso, orientar el trabajo y mantener el ritmo de entrega.',
 		],
 	},
 	{
-		title: '2019 - Organizer of the 1st Central American Space Generation Workshop',
+		title: '2019 - Organizador del 1er Central American Space Generation Workshop',
 		background: [
-			'Managed delegate communications, moderated meetings, invited speakers, coordinated sponsor support, and helped deliver a record participation of about 150 delegates.',
+			'Gestion de comunicaciones con delegados, moderacion de reuniones, invitacion de conferencistas, coordinacion de patrocinadores y apoyo para lograr una participacion record de aproximadamente 150 delegados.',
 		],
 	},
 	{
-		title: '2016 - DropTES 3rd Round, research team coordinator',
+		title: '2016 - DropTES 3ra ronda, coordinador del equipo de investigacion',
 		background: [
-			'Proposed the microgravity experiment that won UNOOSA DropTES and coordinated team scope, schedule, and readiness constraints.',
+			'Propuesta del experimento de microgravedad ganador de UNOOSA DropTES y coordinacion del alcance del equipo, cronograma y restricciones de alistamiento.',
 		],
 	},
 	{
-		title: '2015 - Staff member of the 1st Costa Rican Rocketry Camp',
+		title: '2015 - Miembro del staff del 1er campamento costarricense de coheteria',
 		background: [
-			'Supported event organization, provided build guidance, and assisted attendees through model-rocketry activities.',
+			'Apoyo a la organizacion del evento, guia en construccion y acompanamiento a participantes en actividades de coheteria de modelo.',
 		],
 	},
 	{
-		title: '2012 - Robotics Group, University of Costa Rica',
+		title: '2012 - Grupo de robotica, Universidad de Costa Rica',
 		background: [
-			'Co-founded the first robotics group at UCR to create shared space, mentorship, and infrastructure for student robotics projects.',
+			'Cofundacion del primer grupo de robotica en la UCR para crear espacio compartido, mentoria e infraestructura para proyectos estudiantiles de robotica.',
 		],
 	},
 ];
@@ -581,7 +581,7 @@ const education: EducationItem[] = [
 		logoSrc: '/logos/purdue.png',
 		logoAlt: 'Purdue University logo',
 		programs: [
-			'PhD Student in Aeronautics and Astronautics (2022 - Today)',
+			'Estudiante de doctorado en Aeronautica y Astronautica (2022 - actualidad)',
 			'GPA: 3.88',
 		],
 	},
@@ -590,7 +590,7 @@ const education: EducationItem[] = [
 		href: 'https://www.isunet.edu/',
 		logoSrc: '/logos/isu.png',
 		logoAlt: 'International Space University logo',
-		programs: ['31st Space Studies Program (2018)', 'Business and Management Minor', 'GPA: 4.0'],
+		programs: ['31st Space Studies Program (2018)', 'Minor en Business and Management', 'GPA: 4.0'],
 	},
 	{
 		institution: 'University of Costa Rica',
@@ -598,9 +598,9 @@ const education: EducationItem[] = [
 		logoSrc: '/logos/ucr.png',
 		logoAlt: 'University of Costa Rica logo',
 		programs: [
-			'Mechanical Engineering (2011-2016)',
-			'Minor in Electrical Engineering',
-			'Class top 5% (2/42)',
+			'Ingenieria mecanica (2011-2016)',
+			'Minor en ingenieria electrica',
+			'Top 5% de la generacion (2/42)',
 		],
 	},
 	{
@@ -609,8 +609,8 @@ const education: EducationItem[] = [
 		logoSrc: '/logos/minnesota.png',
 		logoAlt: 'University of Minnesota logo',
 		programs: [
-			'Mechanical Engineering (H2 2012)',
-			'One semester abroad through a US Department of State scholarship',
+			'Ingenieria mecanica (H2 2012)',
+			'Un semestre de intercambio mediante una beca del US Department of State',
 		],
 	},
 ];
@@ -734,13 +734,13 @@ const publications: PublicationItem[] = [
 
 const externalMediaCategories: MediaCategory[] = [
 	{
-		title: 'Podcasts and Interviews',
+		title: 'Podcasts y Entrevistas',
 		iconKind: 'podcast',
 		links: [
 			{
 				title: 'epiSTEMas Episode E061',
 				description:
-					'Podcast conversation about aerospace engineering and Central American participation in space.',
+					'Conversacion en podcast sobre ingenieria aeroespacial y la participacion centroamericana en el espacio.',
 				href:
 					'https://epistemaspod.podbean.com/e/moacir-fonseca-becker-ingenieria-mecanica-y-centroamerica-en-el-espacio/',
 				source: 'EpiSTEMas',
@@ -749,14 +749,14 @@ const externalMediaCategories: MediaCategory[] = [
 			},
 			{
 				title: 'UNOOSA LEAD Youth Innovation Festival Panel',
-				description: 'Panel segment with the United Nations Office for Outer Space Affairs.',
+				description: 'Segmento de panel con la Oficina de las Naciones Unidas para Asuntos del Espacio Ultraterrestre.',
 				href: 'https://www.youtube.com/watch?v=gW7j54dQGX0&t=970s',
 				source: 'YouTube / UNOOSA',
 				kind: 'video',
 			},
 			{
 				title: 'La Reaccion CR Interview',
-				description: 'Spanish-language media interview and discussion.',
+				description: 'Entrevista y conversacion en medios en idioma espanol.',
 				href: 'https://www.youtube.com/watch?v=UKomvqgaHiU&t=402s',
 				source: 'YouTube',
 				kind: 'video',
@@ -764,19 +764,19 @@ const externalMediaCategories: MediaCategory[] = [
 		],
 	},
 	{
-		title: 'News and Feature Articles',
+		title: 'Noticias y Articulos Destacados',
 		iconKind: 'news',
 		links: [
 			{
 				title: 'How Kerbal Space Program Is Inspiring Real Mission Designs',
-				description: 'Feature story mentioning Moacir F. Becker in mission-design context.',
+				description: 'Articulo destacado que menciona a Moacir F. Becker en contexto de diseno de misiones.',
 				href: 'https://www.universetoday.com/articles/how-kerbal-space-program-is-inspiring-real-mission-designs',
 				source: 'Universe Today',
 				kind: 'news',
 			},
 			{
 				title: 'Robotifest Projects at UCR',
-				description: 'University article about robotics projects and competition outcomes.',
+				description: 'Articulo universitario sobre proyectos de robotica y resultados de competencia.',
 				href:
 					'https://www.ucr.ac.cr/noticias/2014/8/19/grandes-proyectos-salen-a-la-luz-en-robotifest-ucr/imprimir.html?empotrar=true&ruta=https%3A%2F%2Fwww.ucr.ac.cr%2Fnoticias%2F2014%2F8%2F19%2Fgrandes-proyectos-salen-a-la-luz-en-robotifest-ucr.html',
 				source: 'Universidad de Costa Rica',
@@ -784,7 +784,7 @@ const externalMediaCategories: MediaCategory[] = [
 			},
 			{
 				title: 'DropTES Third Cycle Overview',
-				description: 'Official overview of the third DropTES cycle and participating teams.',
+				description: 'Resumen oficial del tercer ciclo de DropTES y de los equipos participantes.',
 				href:
 					'https://www.unoosa.org/oosa/en/ourwork/psa/hsti/capacity-building/droptes-third-cycle.html',
 				source: 'UNOOSA',
@@ -793,19 +793,19 @@ const externalMediaCategories: MediaCategory[] = [
 		],
 	},
 	{
-		title: 'Official and Institutional Pages',
+		title: 'Paginas Oficiales e Institucionales',
 		iconKind: 'official',
 		links: [
 			{
 				title: 'UNOOSA Hypergravity and Microgravity Webinar Track',
-				description: 'DropTES winner references with webinar materials.',
+				description: 'Referencias de ganadores de DropTES con materiales de webinar.',
 				href: 'https://www.unoosa.org/oosa/en/ourwork/access2space4all/HMTrack_Webinars.html',
 				source: 'UNOOSA',
 				kind: 'official',
 			},
 			{
 				title: 'UNOOSA Awardees: Costa Rica TEC and UCR',
-				description: 'Institutional awardee listing for Costa Rica participants.',
+				description: 'Listado institucional de galardonados para participantes de Costa Rica.',
 				href:
 					'https://www.unoosa.org/oosa/en/ourwork/access2space4all/awardees/costa_rica_tec_ucr.html',
 				source: 'UNOOSA',
@@ -813,14 +813,14 @@ const externalMediaCategories: MediaCategory[] = [
 			},
 			{
 				title: 'UNOOSA Common Webinars',
-				description: 'Webinar index referencing DropTES and related media.',
+				description: 'Indice de webinars con referencias a DropTES y medios relacionados.',
 				href: 'https://www.unoosa.org/oosa/en/ourwork/access2space4all/Common_Webinars.html',
 				source: 'UNOOSA',
 				kind: 'official',
 			},
 			{
 				title: 'MRZ-SAT Project Site',
-				description: 'Official mission page with team and project information.',
+				description: 'Pagina oficial de la mision con informacion del equipo y del proyecto.',
 				href: 'https://mrz-sat.unah.edu.hn/english/',
 				source: 'Proyecto Morazan / UNAH',
 				kind: 'official',
@@ -828,19 +828,19 @@ const externalMediaCategories: MediaCategory[] = [
 		],
 	},
 	{
-		title: 'Talks, Outreach and Profiles',
+		title: 'Charlas, Divulgacion y Perfiles',
 		iconKind: 'outreach',
 		links: [
 			{
 				title: 'Purdue TicoTalk Event',
-				description: 'BoilerLink event listing featuring Moacir Fonseca Becker.',
+				description: 'Publicacion de evento en BoilerLink con participacion de Moacir Fonseca Becker.',
 				href: 'https://boilerlink.purdue.edu/event/11509502',
 				source: 'Purdue BoilerLink',
 				kind: 'outreach',
 			},
 			{
 				title: 'Educational Outreach: Colegio Cientifico de San Vito',
-				description: 'Outreach post for high-school students on aerospace pathways.',
+				description: 'Publicacion de divulgacion para estudiantes de secundaria sobre trayectorias en aeroespacial.',
 				href:
 					'https://www.facebook.com/CCCRSV/posts/el-joven-moacir-fonseca-becker-es-estudiante-de-posgrado-de-ingenier%C3%ADa-aeroespac/711624457433119/',
 				source: 'Facebook',
@@ -848,14 +848,14 @@ const externalMediaCategories: MediaCategory[] = [
 			},
 			{
 				title: 'Google Scholar Profile',
-				description: 'Academic profile with citations and research record.',
+				description: 'Perfil academico con citas y trayectoria de investigacion.',
 				href: 'https://scholar.google.com/citations?hl=en&user=wc3XeSoAAAAJ',
 				source: 'Google Scholar',
 				kind: 'profile',
 			},
 			{
 				title: 'Official Personal Site',
-				description: 'Primary personal website and portfolio.',
+				description: 'Sitio personal principal y portafolio.',
 				href: 'https://moacir.space/',
 				source: 'moacir.space',
 				kind: 'profile',
@@ -918,7 +918,14 @@ const externalMediaCategories: MediaCategory[] = [
 						</svg>
 					</span>
 				</button>
-				<a class="language-toggle" href="/" aria-label="Cambiar a inglés">EN</a>
+				<a
+					class="language-toggle"
+					href="/"
+					aria-label="Cambiar a inglés"
+					data-language-cue="Cambiar idioma"
+				>
+					🇺🇸
+				</a>
 				<a
 					class="cv-link"
 					href="https://drive.google.com/file/d/1vwPQEI_GvsCVWiBJQ5meD143yRfUaTRw/view?usp=sharing"
@@ -950,7 +957,7 @@ const externalMediaCategories: MediaCategory[] = [
 					/>
 				</aside>
 			</div>
-			<p class="thank-you">¡Gracias por visitar mi sitio!</p>
+			<p class="thank-you">¡Gracias por visitar mi página!</p>
 		</section>
 
 		<section id="portfolio" class="section-shell">
@@ -1555,6 +1562,7 @@ const externalMediaCategories: MediaCategory[] = [
 				const label = `Cambiar a modo ${nextThemeLabel}`;
 				themeToggle.setAttribute('aria-label', label);
 				themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+				themeToggle.setAttribute('data-theme-cue', label);
 				themeToggle.setAttribute('title', label);
 			};
 
@@ -2460,12 +2468,40 @@ const externalMediaCategories: MediaCategory[] = [
 	.theme-toggle:hover {
 		background: transparent;
 		color: #ffffff;
+		filter: drop-shadow(0 0 8px rgba(124, 210, 255, 0.65));
 		transform: translateY(-1px);
 	}
 
 	.theme-toggle:focus-visible {
 		outline: 2px solid rgba(193, 236, 255, 0.95);
 		outline-offset: 2px;
+	}
+
+	.theme-toggle::after {
+		background: rgba(4, 18, 44, 0.92);
+		border: 1px solid rgba(135, 205, 255, 0.52);
+		border-radius: 999px;
+		bottom: -1.85rem;
+		color: #dff4ff;
+		content: attr(data-theme-cue);
+		font-size: 0.61rem;
+		font-weight: 700;
+		left: 50%;
+		letter-spacing: 0.03em;
+		opacity: 0;
+		padding: 0.18rem 0.45rem;
+		pointer-events: none;
+		position: absolute;
+		text-transform: uppercase;
+		transform: translate(-50%, 4px);
+		transition: opacity 0.18s ease, transform 0.18s ease;
+		white-space: nowrap;
+	}
+
+	.theme-toggle:hover::after,
+	.theme-toggle:focus-visible::after {
+		opacity: 1;
+		transform: translate(-50%, 0);
 	}
 
 	.language-toggle {
@@ -2475,19 +2511,49 @@ const externalMediaCategories: MediaCategory[] = [
 		border-radius: 0;
 		color: var(--text);
 		display: inline-flex;
-		font-size: 0.72rem !important;
+		font-size: 1.08rem !important;
 		font-weight: 800 !important;
 		justify-content: center;
-		letter-spacing: 0.08em;
+		letter-spacing: 0;
 		line-height: 1;
 		min-width: 0;
 		padding: 0 !important;
-		text-transform: uppercase;
+		position: relative;
+		text-decoration: none;
+		transition: color 0.2s ease, filter 0.2s ease, transform 0.2s ease;
 	}
 
 	.language-toggle:hover {
 		background: transparent !important;
-		transform: none !important;
+		filter: drop-shadow(0 0 8px rgba(124, 210, 255, 0.65));
+		transform: translateY(-1px) scale(1.04);
+	}
+
+	.language-toggle::after {
+		background: rgba(4, 18, 44, 0.92);
+		border: 1px solid rgba(135, 205, 255, 0.52);
+		border-radius: 999px;
+		bottom: -1.85rem;
+		color: #dff4ff;
+		content: attr(data-language-cue);
+		font-size: 0.61rem;
+		font-weight: 700;
+		left: 50%;
+		letter-spacing: 0.03em;
+		opacity: 0;
+		padding: 0.18rem 0.45rem;
+		pointer-events: none;
+		position: absolute;
+		text-transform: uppercase;
+		transform: translate(-50%, 4px);
+		transition: opacity 0.18s ease, transform 0.18s ease;
+		white-space: nowrap;
+	}
+
+	.language-toggle:hover::after,
+	.language-toggle:focus-visible::after {
+		opacity: 1;
+		transform: translate(-50%, 0);
 	}
 
 	.theme-icon {
@@ -3960,8 +4026,22 @@ const externalMediaCategories: MediaCategory[] = [
 		color: #123761;
 	}
 
+	:global(html[data-theme='light']) .language-toggle::after {
+		background: rgba(255, 255, 255, 0.96);
+		border-color: rgba(67, 122, 190, 0.42);
+		box-shadow: 0 6px 16px rgba(28, 66, 114, 0.14);
+		color: #123761;
+	}
+
 	:global(html[data-theme='light']) .theme-toggle:hover {
 		background: transparent;
+		color: #123761;
+	}
+
+	:global(html[data-theme='light']) .theme-toggle::after {
+		background: rgba(255, 255, 255, 0.96);
+		border-color: rgba(67, 122, 190, 0.42);
+		box-shadow: 0 6px 16px rgba(28, 66, 114, 0.14);
 		color: #123761;
 	}
 

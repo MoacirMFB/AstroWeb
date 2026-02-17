@@ -1058,10 +1058,13 @@ const externalMediaCategories: MediaCategory[] = [
 					</div>
 				</div>
 			</div>
-			<script type="application/json" id="skills-area-data">
-				{JSON.stringify(skillAreaPayload)}
-			</script>
-		</section>
+				<script
+					type="application/json"
+					id="skills-area-data"
+					is:inline
+					set:html={JSON.stringify(skillAreaPayload)}
+				></script>
+			</section>
 
 		<section id="leadership" class="section-shell">
 			<div class="section-header">

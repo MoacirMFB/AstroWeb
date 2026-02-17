@@ -990,25 +990,34 @@ const externalMediaCategories: MediaCategory[] = [
 																>
 																	{
 																		item.type === 'video' ? (
-																			<div class="gallery-video-wrap">
-																			<iframe
-																				title={`${project.title} video preview`}
-																				src={getEmbedUrl(item.video)}
-																				loading="lazy"
-																				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-																				referrerpolicy="strict-origin-when-cross-origin"
-																				allowfullscreen
-																			></iframe>
-																			<button
-																				type="button"
-																				class="gallery-video-open"
-																				data-gallery-video-open
-																				aria-label={`Open larger video for ${project.title}`}
-																			>
-																				<span>Open Large</span>
-																			</button>
-																		</div>
-																	) : (
+																			(() => {
+																				const posterSrc = getYouTubeThumbnailFromUrl(item.video.url) || project.images?.[0]?.src || '';
+																				return (
+																					<div
+																						class="gallery-video-wrap"
+																						data-gallery-video-open
+																						role="button"
+																						tabindex="0"
+																						aria-label={`Click to expand video for ${project.title}`}
+																					>
+																						{
+																							posterSrc ? (
+																								<img
+																									class="gallery-video-thumb"
+																									src={posterSrc}
+																									alt={`${project.title} video thumbnail`}
+																									loading="eager"
+																									decoding="async"
+																								/>
+																							) : (
+																								<div class="gallery-video-fallback">{project.title}</div>
+																							)
+																						}
+																						<span class="gallery-video-play" aria-hidden="true"></span>
+																					</div>
+																				);
+																			})()
+																		) : (
 																		<img
 																			class="gallery-image"
 																			src={item.image.src}
@@ -1576,7 +1585,7 @@ const externalMediaCategories: MediaCategory[] = [
 				const lightboxPrev = document.querySelector('[data-lightbox-prev]');
 				const lightboxNext = document.querySelector('[data-lightbox-next]');
 				const galleryImages = Array.from(document.querySelectorAll('.gallery-image'));
-				const galleryVideoOpenButtons = Array.from(document.querySelectorAll('[data-gallery-video-open]'));
+				const galleryVideoTriggers = Array.from(document.querySelectorAll('[data-gallery-video-open]'));
 				let lightboxSlides = [];
 				let lightboxIndex = 0;
 
@@ -1691,17 +1700,28 @@ const externalMediaCategories: MediaCategory[] = [
 					});
 				});
 
-				galleryVideoOpenButtons.forEach((button) => {
-					button.addEventListener('click', (event) => {
-						event.preventDefault();
-						const carousel = button.closest('[data-carousel]');
-						const slide = button.closest('[data-carousel-slide]');
+				galleryVideoTriggers.forEach((trigger) => {
+					const openFromTrigger = () => {
+						const carousel = trigger.closest('[data-carousel]');
+						const slide = trigger.closest('[data-carousel-slide]');
 						const slides = getCarouselSlides(carousel);
 						const index = Math.max(
 							0,
 							slides.findIndex((entry) => entry.node === slide),
 						);
 						openLightbox(slides, index);
+					};
+
+					trigger.addEventListener('click', (event) => {
+						event.preventDefault();
+						openFromTrigger();
+					});
+
+					trigger.addEventListener('keydown', (event) => {
+						if (event.key === 'Enter' || event.key === ' ') {
+							event.preventDefault();
+							openFromTrigger();
+						}
 					});
 				});
 
@@ -2860,7 +2880,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 	.gallery-item {
 		display: none;
-		height: 8.9rem;
+		aspect-ratio: 16 / 9;
 		margin: 0;
 		padding: 0;
 		width: 100%;
@@ -2881,46 +2901,91 @@ const externalMediaCategories: MediaCategory[] = [
 	}
 
 	.gallery-video-wrap {
+		align-items: center;
+		background: rgba(1, 8, 22, 0.9);
 		border: 1px solid rgba(112, 182, 255, 0.28);
 		border-radius: 0;
+		cursor: zoom-in;
+		display: flex;
 		height: 100%;
+		justify-content: center;
 		overflow: hidden;
 		position: relative;
-	}
-
-	.gallery-video-wrap iframe {
-		border: 0;
-		display: block;
-		height: 100%;
 		width: 100%;
 	}
 
-	.gallery-video-open {
-		align-items: center;
-		background: linear-gradient(180deg, rgba(1, 10, 28, 0.15), rgba(1, 10, 28, 0.45));
-		border: 0;
-		color: #f1fbff;
-		cursor: zoom-in;
-		display: inline-flex;
-		font-weight: 700;
-		inset: 0;
-		justify-content: center;
-		padding: 0;
-		position: absolute;
+	.gallery-video-thumb {
+		display: block;
+		height: 100%;
+		object-fit: contain;
+		width: 100%;
 	}
 
-	.gallery-video-open span {
+	.gallery-video-fallback {
+		align-items: center;
+		color: #d9f0ff;
+		display: flex;
+		font-size: 0.8rem;
+		font-weight: 700;
+		height: 100%;
+		justify-content: center;
+		padding: 0.4rem;
+		text-align: center;
+		width: 100%;
+	}
+
+	.gallery-video-play {
+		background: rgba(1, 11, 27, 0.62);
+		border: 2px solid rgba(236, 250, 255, 0.86);
+		border-radius: 999px;
+		height: 3.05rem;
+		left: 50%;
+		pointer-events: none;
+		position: absolute;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		width: 3.05rem;
+	}
+
+	.gallery-video-play::after {
+		border-bottom: 0.56rem solid transparent;
+		border-left: 0.88rem solid rgba(238, 250, 255, 0.95);
+		border-top: 0.56rem solid transparent;
+		content: '';
+		left: 50%;
+		position: absolute;
+		top: 50%;
+		transform: translate(-40%, -50%);
+	}
+
+	.gallery-video-wrap::after {
 		background: rgba(3, 16, 40, 0.86);
 		border: 1px solid rgba(154, 220, 255, 0.8);
 		border-radius: 999px;
+		color: #f1fbff;
+		content: 'Click to expand';
 		font-size: 0.74rem;
+		font-weight: 700;
+		left: 50%;
 		letter-spacing: 0.04em;
+		opacity: 0;
 		padding: 0.3rem 0.62rem;
+		position: absolute;
 		text-transform: uppercase;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		transition: opacity 0.18s ease, background-color 0.18s ease;
+		white-space: nowrap;
 	}
 
-	.gallery-video-open:hover span {
-		background: rgba(18, 54, 108, 0.92);
+	.gallery-video-wrap:hover::after,
+	.gallery-video-wrap:focus-visible::after {
+		opacity: 1;
+	}
+
+	.gallery-video-wrap:focus-visible {
+		outline: 2px solid rgba(190, 233, 255, 0.95);
+		outline-offset: 2px;
 	}
 
 	.gallery-item:hover img {

@@ -615,12 +615,53 @@ const mediaFeatures: VideoFeature[] = [
 									project.images && project.images.length > 0 && (
 										<div class="project-gallery-wrap">
 											<p class="gallery-label">Original Project Images</p>
-											<div class="project-gallery">
-												{project.images.map((image) => (
-													<figure class="gallery-item">
-														<img src={image.src} alt={image.alt} loading="eager" decoding="async" />
-													</figure>
-												))}
+											<div class="project-carousel" data-carousel>
+												<button
+													type="button"
+													class="carousel-control"
+													data-carousel-prev
+													aria-label={`Previous image for ${project.title}`}
+												>
+													‹
+												</button>
+												<div class="project-gallery" role="region" aria-label={`${project.title} image carousel`}>
+													{project.images.map((image, index) => (
+														<figure
+															class={`gallery-item ${index === 0 ? 'is-active' : ''}`}
+															data-carousel-slide
+															aria-hidden={index === 0 ? 'false' : 'true'}
+														>
+															<img
+																class="gallery-image"
+																src={image.src}
+																alt={image.alt}
+																loading="eager"
+																decoding="async"
+															/>
+														</figure>
+													))}
+												</div>
+												<button
+													type="button"
+													class="carousel-control"
+													data-carousel-next
+													aria-label={`Next image for ${project.title}`}
+												>
+													›
+												</button>
+												<div class="carousel-dots" role="tablist" aria-label={`${project.title} image selection`}>
+													{
+														project.images.map((_, index) => (
+															<button
+																type="button"
+																class={`carousel-dot ${index === 0 ? 'is-active' : ''}`}
+																data-carousel-dot
+																aria-label={`Go to image ${index + 1}`}
+																aria-selected={index === 0 ? 'true' : 'false'}
+															></button>
+														))
+													}
+												</div>
 											</div>
 										</div>
 									)
@@ -874,18 +915,33 @@ const mediaFeatures: VideoFeature[] = [
 			</div>
 		</section>
 
-		<footer class="site-footer">
-			<p>© Moacir Fonseca Becker</p>
-			<p class="footer-note">Legacy footer origin: OceanWP Theme by Nick, powered by WordPress.</p>
-		</footer>
-	</main>
-</Layout>
+			<footer class="site-footer">
+				<p>© Moacir Fonseca Becker</p>
+				<p class="footer-note">Legacy footer origin: OceanWP Theme by Nick, powered by WordPress.</p>
+			</footer>
 
-<script is:inline>
-	(() => {
-		const buttons = Array.from(document.querySelectorAll('.filter-button'));
-		const cards = Array.from(document.querySelectorAll('.project-card'));
-		const countTarget = document.querySelector('[data-project-count]');
+			<div class="image-lightbox" data-image-lightbox aria-hidden="true">
+				<button
+					type="button"
+					class="lightbox-close"
+					data-lightbox-close
+					aria-label="Close expanded image"
+				>
+					×
+				</button>
+				<figure class="lightbox-figure">
+					<img data-lightbox-image src="" alt="" />
+					<figcaption data-lightbox-caption></figcaption>
+				</figure>
+			</div>
+		</main>
+	</Layout>
+
+	<script is:inline>
+		(() => {
+			const buttons = Array.from(document.querySelectorAll('.filter-button'));
+			const cards = Array.from(document.querySelectorAll('.project-card'));
+			const countTarget = document.querySelector('[data-project-count]');
 		if (!buttons.length || !cards.length || !countTarget) {
 			return;
 		}
@@ -915,18 +971,115 @@ const mediaFeatures: VideoFeature[] = [
 			countTarget.textContent = `Showing ${visibleCount} ${label}`;
 		};
 
-		buttons.forEach((button) => {
-			button.addEventListener('click', () => {
-				const filter = button.getAttribute('data-filter') || 'all';
-				buttons.forEach((other) => other.classList.remove('is-active'));
-				button.classList.add('is-active');
-				applyFilter(filter);
+			buttons.forEach((button) => {
+				button.addEventListener('click', () => {
+					const filter = button.getAttribute('data-filter') || 'all';
+					buttons.forEach((other) => other.classList.remove('is-active'));
+					button.classList.add('is-active');
+					applyFilter(filter);
+				});
 			});
-		});
 
-		applyFilter('all');
-	})();
-</script>
+				const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
+				carousels.forEach((carousel) => {
+					const slides = Array.from(carousel.querySelectorAll('[data-carousel-slide]'));
+					const dots = Array.from(carousel.querySelectorAll('[data-carousel-dot]'));
+					const prev = carousel.querySelector('[data-carousel-prev]');
+				const next = carousel.querySelector('[data-carousel-next]');
+
+				if (slides.length <= 1) {
+					carousel.classList.add('is-single');
+					return;
+				}
+
+				let currentIndex = 0;
+				const render = () => {
+					slides.forEach((slide, index) => {
+						const isActive = index === currentIndex;
+						slide.classList.toggle('is-active', isActive);
+						slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+					});
+					dots.forEach((dot, index) => {
+						const isActive = index === currentIndex;
+						dot.classList.toggle('is-active', isActive);
+						dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+					});
+				};
+
+				prev?.addEventListener('click', () => {
+					currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+					render();
+				});
+
+				next?.addEventListener('click', () => {
+					currentIndex = (currentIndex + 1) % slides.length;
+					render();
+				});
+
+				dots.forEach((dot, index) => {
+					dot.addEventListener('click', () => {
+						currentIndex = index;
+						render();
+					});
+				});
+
+					render();
+				});
+
+				const lightbox = document.querySelector('[data-image-lightbox]');
+				const lightboxImage = document.querySelector('[data-lightbox-image]');
+				const lightboxCaption = document.querySelector('[data-lightbox-caption]');
+				const lightboxClose = document.querySelector('[data-lightbox-close]');
+				const galleryImages = Array.from(document.querySelectorAll('.gallery-image'));
+
+				const openLightbox = (src, alt) => {
+					if (!lightbox || !lightboxImage || !lightboxCaption) {
+						return;
+					}
+					lightboxImage.setAttribute('src', src);
+					lightboxImage.setAttribute('alt', alt || 'Expanded project image');
+					lightboxCaption.textContent = alt || '';
+					lightbox.classList.add('is-open');
+					lightbox.setAttribute('aria-hidden', 'false');
+					document.body.classList.add('lightbox-open');
+				};
+
+				const closeLightbox = () => {
+					if (!lightbox || !lightboxImage || !lightboxCaption) {
+						return;
+					}
+					lightbox.classList.remove('is-open');
+					lightbox.setAttribute('aria-hidden', 'true');
+					lightboxImage.setAttribute('src', '');
+					lightboxImage.setAttribute('alt', '');
+					lightboxCaption.textContent = '';
+					document.body.classList.remove('lightbox-open');
+				};
+
+				galleryImages.forEach((image) => {
+					image.addEventListener('click', () => {
+						const src = image.getAttribute('src') || '';
+						const alt = image.getAttribute('alt') || '';
+						openLightbox(src, alt);
+					});
+				});
+
+				lightboxClose?.addEventListener('click', closeLightbox);
+				lightbox?.addEventListener('click', (event) => {
+					if (event.target === lightbox) {
+						closeLightbox();
+					}
+				});
+
+				document.addEventListener('keydown', (event) => {
+					if (event.key === 'Escape') {
+						closeLightbox();
+					}
+				});
+
+				applyFilter('all');
+			})();
+		</script>
 
 <style>
 	:global(*) {
@@ -956,11 +1109,16 @@ const mediaFeatures: VideoFeature[] = [
 		min-height: 100vh;
 	}
 
+	:global(body.lightbox-open) {
+		overflow: hidden;
+	}
+
 	.page {
 		margin: 0 auto;
-		max-width: 78rem;
-		padding: 1.1rem 1.15rem 4rem;
+		max-width: 72rem;
+		padding: 1rem clamp(1.1rem, 4vw, 3.8rem) 3.4rem;
 		position: relative;
+		width: 100%;
 	}
 
 	.aurora {
@@ -1035,17 +1193,18 @@ const mediaFeatures: VideoFeature[] = [
 	.site-header {
 		align-items: center;
 		backdrop-filter: blur(14px);
-		background: rgba(6, 26, 57, 0.66);
-		border: 1px solid var(--line);
-		border-radius: 999px;
-		box-shadow: 0 14px 34px rgba(1, 14, 37, 0.4);
+		background: rgba(3, 10, 25, 0.86);
+		border: 0;
+		border-bottom: 1px solid var(--line);
+		border-radius: 0;
+		box-shadow: none;
 		display: grid;
 		gap: 0.85rem;
 		grid-template-columns: auto 1fr auto;
-		margin-bottom: 1.35rem;
-		padding: 0.58rem 0.9rem;
+		margin-bottom: 1rem;
+		padding: 0.62rem 0;
 		position: sticky;
-		top: 0.8rem;
+		top: 0;
 		z-index: 40;
 	}
 
@@ -1065,7 +1224,7 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.site-header a {
-		border-radius: 999px;
+		border-radius: 0.3rem;
 		color: var(--text);
 		display: inline-block;
 		font-size: 0.86rem;
@@ -1082,8 +1241,9 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.cv-link {
-		background: linear-gradient(120deg, #43b3ff 0%, #3f86ff 100%);
-		box-shadow: 0 8px 20px rgba(46, 145, 255, 0.35);
+		background: transparent;
+		border: 1px solid var(--line-strong);
+		box-shadow: none;
 		color: #f3fbff !important;
 		font-weight: 700;
 	}
@@ -1097,15 +1257,16 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.hero {
-		backdrop-filter: blur(8px);
-		background: linear-gradient(140deg, rgba(8, 36, 74, 0.83), rgba(8, 53, 109, 0.74));
-		border: 1px solid var(--line);
-		border-radius: 1.35rem;
-		box-shadow: 0 24px 50px rgba(2, 17, 46, 0.38);
+		backdrop-filter: none;
+		background: transparent;
+		border: 0;
+		border-bottom: 1px solid var(--line);
+		border-radius: 0;
+		box-shadow: none;
 		display: grid;
 		gap: 1rem;
-		margin-bottom: 1.8rem;
-		padding: 1.5rem;
+		margin-bottom: 0;
+		padding: 1.1rem 0 1.6rem;
 	}
 
 	.eyebrow {
@@ -1152,13 +1313,14 @@ const mediaFeatures: VideoFeature[] = [
 
 	.section-shell,
 	.contact {
-		backdrop-filter: blur(8px);
-		background: linear-gradient(145deg, var(--surface), var(--surface-2));
-		border: 1px solid var(--line);
-		border-radius: 1.15rem;
-		box-shadow: 0 18px 40px rgba(2, 17, 46, 0.3);
-		margin-bottom: 1rem;
-		padding: 1.12rem;
+		backdrop-filter: none;
+		background: transparent;
+		border: 0;
+		border-bottom: 1px solid var(--line);
+		border-radius: 0;
+		box-shadow: none;
+		margin-bottom: 0;
+		padding: 1.25rem 0;
 	}
 
 	.section-header p {
@@ -1167,30 +1329,32 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.cv-panel {
-		background: rgba(6, 32, 71, 0.65);
-		border: 1px solid var(--line);
-		border-radius: 1rem;
+		background: transparent;
+		border: 0;
+		border-left: 2px solid var(--line-strong);
+		border-radius: 0;
 		display: grid;
 		gap: 0.6rem;
 		margin-bottom: 1rem;
-		padding: 1rem;
+		padding: 0.25rem 0 0.35rem 0.85rem;
 	}
 
 	.button {
-		background: linear-gradient(120deg, #43b3ff 0%, #3f86ff 100%);
-		border-radius: 999px;
+		background: transparent;
+		border: 1px solid var(--line-strong);
+		border-radius: 0.35rem;
 		color: #f3fbff;
 		display: inline-block;
 		font-weight: 700;
 		padding: 0.45rem 0.95rem;
 		text-decoration: none;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		transition: background-color 0.2s ease, border-color 0.2s ease;
 		width: fit-content;
 	}
 
 	.button:hover {
-		box-shadow: 0 10px 22px rgba(61, 153, 255, 0.35);
-		transform: translateY(-1px);
+		background: rgba(75, 152, 255, 0.2);
+		border-color: rgba(150, 229, 255, 0.9);
 	}
 
 	.portfolio-toolbar {
@@ -1201,9 +1365,9 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.filter-button {
-		background: rgba(31, 98, 182, 0.45);
-		border: 1px solid var(--line);
-		border-radius: 999px;
+		background: transparent;
+		border: 1px solid transparent;
+		border-radius: 0.28rem;
 		color: #e9f7ff;
 		cursor: pointer;
 		font-size: 0.82rem;
@@ -1215,13 +1379,13 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.filter-button:hover {
-		background: rgba(75, 152, 255, 0.45);
-		border-color: var(--line-strong);
-		transform: translateY(-1px);
+		background: rgba(75, 152, 255, 0.2);
+		border-color: rgba(150, 229, 255, 0.44);
+		transform: none;
 	}
 
 	.filter-button.is-active {
-		background: linear-gradient(120deg, rgba(80, 187, 255, 0.88), rgba(72, 130, 255, 0.9));
+		background: rgba(80, 187, 255, 0.2);
 		border-color: rgba(150, 229, 255, 0.9);
 		color: #ffffff;
 	}
@@ -1232,38 +1396,48 @@ const mediaFeatures: VideoFeature[] = [
 		margin-bottom: 0.85rem !important;
 	}
 
-	.project-grid,
+	.project-grid {
+		display: grid;
+		gap: 0.7rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
 	.leadership-grid,
 	.education-grid,
 	.media-grid {
 		display: grid;
-		gap: 0.92rem;
-		grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+		gap: 0;
+		grid-template-columns: 1fr;
 	}
 
-	.project-card,
+	.project-card {
+		background: rgba(6, 20, 48, 0.62);
+		border: 1px solid rgba(114, 176, 255, 0.32);
+		border-radius: 0.45rem;
+		display: grid;
+		gap: 0.58rem;
+		padding: 0.7rem;
+		position: relative;
+		transition: border-color 0.22s ease, background-color 0.22s ease;
+	}
+
 	.leadership-card,
 	.education-card,
 	.media-card,
 	.contact-grid article {
-		background: var(--card);
-		border: 1px solid var(--line);
-		border-radius: 1rem;
+		background: transparent;
+		border: 0;
+		border-bottom: 1px solid rgba(114, 176, 255, 0.22);
+		border-radius: 0;
 		display: grid;
-		gap: 0.58rem;
-		padding: 0.95rem;
+		gap: 0.72rem;
+		padding: 1rem 0;
 		position: relative;
-		transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+		transition: border-color 0.25s ease;
 	}
 
 	.project-card::before {
-		background: linear-gradient(120deg, rgba(127, 210, 255, 0.22), rgba(127, 210, 255, 0));
-		content: '';
-		inset: 0;
-		opacity: 0;
-		pointer-events: none;
-		position: absolute;
-		transition: opacity 0.25s ease;
+		display: none;
 	}
 
 	.project-card:hover,
@@ -1272,17 +1446,15 @@ const mediaFeatures: VideoFeature[] = [
 	.media-card:hover,
 	.contact-grid article:hover {
 		border-color: var(--line-strong);
-		box-shadow: 0 14px 28px rgba(6, 28, 60, 0.4);
-		transform: translateY(-5px);
 	}
 
-	.project-card:hover::before {
-		opacity: 1;
+	.project-card:hover {
+		background: rgba(9, 28, 67, 0.75);
 	}
 
 	.project-card.is-hidden {
 		opacity: 0;
-		transform: scale(0.985);
+		transform: none;
 	}
 
 	.card-header {
@@ -1320,7 +1492,7 @@ const mediaFeatures: VideoFeature[] = [
 	.leadership-card h3,
 	.education-card h3,
 	.media-card h3 {
-		font-size: 1.08rem;
+		font-size: 1rem;
 		line-height: 1.24;
 		margin-bottom: 0;
 	}
@@ -1344,19 +1516,66 @@ const mediaFeatures: VideoFeature[] = [
 		text-transform: uppercase;
 	}
 
-	.project-gallery {
+	.project-carousel {
+		align-items: center;
 		display: grid;
 		gap: 0.45rem;
-		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+		grid-template-columns: auto 1fr auto;
+	}
+
+	.project-carousel.is-single {
+		grid-template-columns: 1fr;
+	}
+
+	.carousel-control {
+		align-items: center;
+		background: transparent;
+		border: 1px solid rgba(132, 201, 255, 0.44);
+		border-radius: 0.3rem;
+		color: #e5f6ff;
+		cursor: pointer;
+		display: inline-flex;
+		font-size: 1.05rem;
+		font-weight: 700;
+		height: 1.8rem;
+		justify-content: center;
+		line-height: 1;
+		padding: 0;
+		transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+		width: 1.8rem;
+	}
+
+	.carousel-control:hover {
+		background: rgba(76, 153, 255, 0.24);
+		border-color: rgba(154, 222, 255, 0.8);
+		transform: none;
+	}
+
+	.project-carousel.is-single .carousel-control,
+	.project-carousel.is-single .carousel-dots {
+		display: none;
+	}
+
+	.project-gallery {
+		background: transparent;
+		border: 0;
+		border-radius: 0;
+		min-height: 0;
+		overflow: hidden;
+		position: relative;
 	}
 
 	.gallery-item {
-		background: rgba(2, 16, 40, 0.72);
-		border: 1px solid rgba(132, 201, 255, 0.24);
-		border-radius: 0.7rem;
-		height: 8.6rem;
+		display: none;
+		height: 8.9rem;
 		margin: 0;
-		overflow: hidden;
+		padding: 0;
+		width: 100%;
+	}
+
+	.gallery-item.is-active {
+		animation: fadeSlide 0.28s ease;
+		display: block;
 	}
 
 	.gallery-item img {
@@ -1365,17 +1584,99 @@ const mediaFeatures: VideoFeature[] = [
 		object-fit: contain;
 		width: 100%;
 		transition: transform 0.24s ease;
+		cursor: zoom-in;
 	}
 
 	.gallery-item:hover img {
 		transform: scale(1.03);
 	}
 
+	.carousel-dots {
+		display: flex;
+		gap: 0.34rem;
+		grid-column: 1 / -1;
+		justify-content: center;
+	}
+
+	.carousel-dot {
+		background: rgba(148, 204, 255, 0.34);
+		border: 0;
+		border-radius: 999px;
+		cursor: pointer;
+		height: 0.52rem;
+		padding: 0;
+		transition: transform 0.18s ease, background-color 0.18s ease;
+		width: 0.52rem;
+	}
+
+	.carousel-dot.is-active {
+		background: rgba(145, 224, 255, 0.95);
+		transform: scale(1.15);
+	}
+
+	.image-lightbox {
+		align-items: center;
+		background: rgba(1, 6, 18, 0.88);
+		display: flex;
+		inset: 0;
+		justify-content: center;
+		opacity: 0;
+		padding: clamp(1rem, 3vw, 2rem);
+		pointer-events: none;
+		position: fixed;
+		transition: opacity 0.2s ease;
+		z-index: 120;
+	}
+
+	.image-lightbox.is-open {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.lightbox-close {
+		background: rgba(15, 40, 84, 0.8);
+		border: 1px solid rgba(153, 220, 255, 0.7);
+		border-radius: 0.35rem;
+		color: #f0fbff;
+		cursor: pointer;
+		font-size: 1.5rem;
+		height: 2.2rem;
+		line-height: 1;
+		position: absolute;
+		right: clamp(0.8rem, 2vw, 1.4rem);
+		top: clamp(0.8rem, 2vw, 1.4rem);
+		width: 2.2rem;
+	}
+
+	.lightbox-figure {
+		display: grid;
+		gap: 0.5rem;
+		margin: 0;
+		max-height: 90vh;
+		max-width: min(92vw, 64rem);
+	}
+
+	.lightbox-figure img {
+		display: block;
+		max-height: 82vh;
+		max-width: 100%;
+		object-fit: contain;
+		width: auto;
+	}
+
+	.lightbox-figure figcaption {
+		color: #b9ddff;
+		font-size: 0.9rem;
+		margin: 0;
+		text-align: center;
+	}
+
 	.project-details {
-		background: rgba(3, 25, 57, 0.48);
-		border: 1px solid rgba(125, 202, 255, 0.25);
-		border-radius: 0.75rem;
-		padding: 0.5rem 0.55rem;
+		background: transparent;
+		border: 0;
+		border-left: 2px solid rgba(125, 202, 255, 0.45);
+		border-radius: 0;
+		padding: 0.15rem 0 0.15rem 0.75rem;
 	}
 
 	.project-details summary {
@@ -1418,9 +1719,9 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.pill-link {
-		background: rgba(65, 158, 255, 0.23);
+		background: transparent;
 		border: 1px solid rgba(103, 189, 255, 0.35);
-		border-radius: 999px;
+		border-radius: 0.35rem;
 		color: #e8f8ff;
 		display: inline-block;
 		font-size: 0.81rem;
@@ -1431,13 +1732,13 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.pill-link:hover {
-		background: rgba(88, 185, 255, 0.35);
-		transform: translateY(-1px);
+		background: rgba(88, 185, 255, 0.2);
+		transform: none;
 	}
 
 	.video-wrap {
 		border: 1px solid rgba(112, 182, 255, 0.28);
-		border-radius: 0.72rem;
+		border-radius: 0;
 		overflow: hidden;
 		transition: transform 0.28s ease, border-color 0.28s ease;
 	}
@@ -1475,8 +1776,8 @@ const mediaFeatures: VideoFeature[] = [
 
 	.skills-embed {
 		border: 1px solid var(--line);
-		border-radius: 0.9rem;
-		box-shadow: inset 0 0 0 1px rgba(157, 222, 255, 0.08);
+		border-radius: 0;
+		box-shadow: none;
 		overflow: hidden;
 	}
 
@@ -1489,14 +1790,15 @@ const mediaFeatures: VideoFeature[] = [
 
 	.logo-frame {
 		align-items: center;
-		background: rgba(2, 17, 42, 0.58);
-		border: 1px solid rgba(149, 213, 255, 0.25);
-		border-radius: 0.78rem;
+		background: transparent;
+		border: 0;
+		border-bottom: 1px solid rgba(149, 213, 255, 0.25);
+		border-radius: 0;
 		display: flex;
-		height: 84px;
+		height: 78px;
 		justify-content: center;
 		overflow: hidden;
-		padding: 0.55rem;
+		padding: 0.2rem;
 	}
 
 	.logo-frame img {
@@ -1537,9 +1839,9 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.map-wrap {
-		background: rgba(5, 30, 66, 0.72);
+		background: transparent;
 		border: 1px solid var(--line);
-		border-radius: 0.84rem;
+		border-radius: 0;
 		overflow: hidden;
 	}
 
@@ -1568,8 +1870,8 @@ const mediaFeatures: VideoFeature[] = [
 
 	.site-footer {
 		color: #bee4ff;
-		padding: 1.2rem 0.3rem 0.2rem;
-		text-align: center;
+		padding: 1.2rem 0 0.2rem;
+		text-align: left;
 	}
 
 	.site-footer p {
@@ -1589,6 +1891,17 @@ const mediaFeatures: VideoFeature[] = [
 		to {
 			opacity: 1;
 			transform: translateY(0);
+		}
+	}
+
+	@keyframes fadeSlide {
+		from {
+			opacity: 0.38;
+			transform: translateX(8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
 		}
 	}
 
@@ -1612,9 +1925,13 @@ const mediaFeatures: VideoFeature[] = [
 
 	@media (max-width: 70rem) {
 		.site-header {
-			border-radius: 1rem;
+			border-radius: 0;
 			grid-template-columns: 1fr;
 			position: static;
+		}
+
+		.project-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
 		.brand img {
@@ -1632,7 +1949,7 @@ const mediaFeatures: VideoFeature[] = [
 
 	@media (max-width: 38rem) {
 		.page {
-			padding: 0.85rem 0.72rem 3rem;
+			padding: 0.85rem 0.95rem 3rem;
 		}
 
 		.project-grid,
@@ -1640,6 +1957,10 @@ const mediaFeatures: VideoFeature[] = [
 		.leadership-grid,
 		.media-grid {
 			grid-template-columns: 1fr;
+		}
+
+		.project-card {
+			padding: 0.62rem;
 		}
 
 		.orb-one,

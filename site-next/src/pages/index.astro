@@ -163,6 +163,27 @@ const mediaKindLabels: Record<MediaKind, string> = {
 	profile: 'Profile',
 };
 
+const publicationNameSplitRegex = /(Becker,\s*M\.F\.|Moacir\s+Fonseca(?:[-\s])?Becker)/gi;
+const publicationNameMatchRegex = /^(Becker,\s*M\.F\.|Moacir\s+Fonseca(?:[-\s])?Becker)$/i;
+
+const highlightPublicationName = (text: string) =>
+	text.split(publicationNameSplitRegex).filter(Boolean).map((segment) => ({
+		text: segment,
+		isName: publicationNameMatchRegex.test(segment),
+	}));
+
+const splitPublicationCitation = (citation: string) => {
+	const match = citation.match(/^(.*?\b\d{4}\.\s*)(.+)$/);
+	if (!match) {
+		return { authors: citation, title: '' };
+	}
+
+	return {
+		authors: match[1],
+		title: match[2],
+	};
+};
+
 const polarToCartesian = (cx: number, cy: number, radius: number, angleInDegrees: number) => {
 	const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180;
 	return {
@@ -180,6 +201,42 @@ const getPiePath = (cx: number, cy: number, radius: number, startAngle: number, 
 };
 
 const projects: ProjectCard[] = [
+	{
+		year: '2025',
+		title: 'Gateway State Estimation via Moon-Horizon Optical Navigation',
+		summary:
+			'Estimated Gateway state in NRHO using only Moon-horizon imagery with CR3BP dynamics, reducing dependence on ground tracking.',
+		highlights: [
+			'Built a synthetic imaging pipeline with limb detection and conic fitting for navigation measurements.',
+			'Implemented Christian-Robinson OPNAV with EKF/UKF filtering.',
+			'Achieved km-level position and m/s-level velocity accuracy in cislunar multi-body regimes.',
+		],
+		note: 'Completed as part of AAE590 PET (2025) at Purdue University.',
+	},
+	{
+		year: '2024',
+		title: 'Distributed Consensus and Control for Multi-Satellite Debris Rendezvous',
+		summary:
+			'Designed a distributed estimation-and-control framework for cooperative rendezvous with large debris under J2-perturbed dynamics.',
+		highlights: [
+			'Developed distributed EKF with Metropolis consensus for a 10-spacecraft Envisat case study.',
+			'Achieved network-wide convergence in 11 iterations with 0.33 m position and 0.006 m/s velocity mean errors.',
+			'Implemented PD guidance enabling meter-level rendezvous in 600 s with ΔV below 50 m/s per agent.',
+		],
+		note: 'Completed as part of AAE590 MAAC (2024) at Purdue University.',
+	},
+	{
+		year: '2024',
+		title: 'Model Predictive Control for Direct Moon Landing from LPO',
+		summary:
+			'Developed a convex MPC framework for direct transfers from Libration Point Orbits to targeted lunar surface landing sites.',
+		highlights: [
+			'Focused on precision landing scenarios near the lunar south pole.',
+			'Implemented conditional collision constraints within a linearized CR3BP dynamics model.',
+			'Demonstrated trajectory tracking and perturbation adaptation using state and control penalty tuning.',
+		],
+		note: 'Completed as part of AAE590 Advanced Control Applications (2024) at Purdue University.',
+	},
 	{
 		year: '2023',
 		title: 'Orbital pursuer evasion game with incomplete information - class project',
@@ -846,8 +903,19 @@ const externalMediaCategories: MediaCategory[] = [
 				<span class="eyebrow-greetings">HELLO!  OLÁ!  HOLA!</span>
 			</p>
 			<h1>Moacir Fonseca Becker</h1>
-			<div class="hero-copy">
-				{heroParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+			<div class="hero-main">
+				<div class="hero-copy">
+					{heroParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+				</div>
+				<aside class="hero-photo-wrap">
+					<img
+						class="hero-photo"
+						src="/profile/moacir-photo.jpg"
+						alt="Portrait of Moacir Fonseca Becker"
+						loading="eager"
+						decoding="async"
+					/>
+				</aside>
 			</div>
 			<p class="thank-you">Thank you for coming!</p>
 		</section>
@@ -879,6 +947,21 @@ const externalMediaCategories: MediaCategory[] = [
 								</div>
 								<h3>{project.title}</h3>
 								<p>{project.summary}</p>
+								{
+									project.highlights && (
+										<div class="project-contrib">
+											<button type="button" class="project-contrib-trigger">Key Contributions</button>
+											<div class="project-contrib-popover" role="tooltip">
+												<p class="project-contrib-title">Key Contributions</p>
+												<ul class="project-contrib-list">
+												{project.highlights.map((item) => (
+													<li>{item}</li>
+												))}
+												</ul>
+											</div>
+										</div>
+									)
+								}
 								{
 									project.images && project.images.length > 0 && (
 										<div class="project-gallery-wrap">
@@ -934,18 +1017,6 @@ const externalMediaCategories: MediaCategory[] = [
 										</div>
 									)
 								}
-								{
-									project.highlights && (
-										<details class="project-details">
-										<summary>Key Contributions</summary>
-										<ul class="detail-list">
-											{project.highlights.map((item) => (
-												<li>{item}</li>
-											))}
-										</ul>
-									</details>
-								)
-							}
 							{project.note && <p class="note">{project.note}</p>}
 							{
 								project.links && (
@@ -982,8 +1053,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 		<section id="awards" class="section-shell">
 			<div class="section-header">
-				<h2>Achievements and Awards</h2>
-				<p>Click linked items for additional context.</p>
+				<h2>Achievements and Awards</h2>				
 			</div>
 			<ul class="award-list">
 				{
@@ -1157,41 +1227,56 @@ const externalMediaCategories: MediaCategory[] = [
 				</div>
 					<ol class="publication-list">
 						{
-							publications.map((item) => (
-								<li class="publication-item">
-									<p class="publication-line">
-										<span class="publication-citation">{item.citation}</span>{' '}
-										<span class="publication-venue">{item.venue}</span>
-										{(item.doi || item.url) && (
-											<span class="publication-links">
-												{' · '}
-												{item.doi && (
-													<>
-														DOI:{' '}
-														<a href={`https://doi.org/${item.doi}`} target="_blank" rel="noreferrer">
-															{item.doi}
+							publications.map((item) => {
+								const parsedCitation = splitPublicationCitation(item.citation);
+								return (
+									<li class="publication-item">
+										<p class="publication-line">
+											<span class="publication-citation">
+												<span class="publication-authors">
+													{highlightPublicationName(parsedCitation.authors).map((segment) =>
+														segment.isName ? (
+															<strong class="publication-author-highlight">{segment.text}</strong>
+														) : (
+															<span>{segment.text}</span>
+														)
+													)}
+												</span>{' '}
+												{parsedCitation.title && (
+													<span class="publication-paper-title">{parsedCitation.title}</span>
+												)}
+											</span>{' '}
+											<span class="publication-venue">{item.venue}</span>
+											{(item.doi || item.url) && (
+												<span class="publication-links">
+													{' · '}
+													{item.doi && (
+														<>
+															DOI:{' '}
+															<a href={`https://doi.org/${item.doi}`} target="_blank" rel="noreferrer">
+																{item.doi}
+															</a>
+															{item.url && ' · '}
+														</>
+													)}
+													{item.url && (
+														<a href={item.url} target="_blank" rel="noreferrer">
+															{item.urlLabel || 'Link'}
 														</a>
-														{item.url && ' · '}
-													</>
-												)}
-												{item.url && (
-													<a href={item.url} target="_blank" rel="noreferrer">
-														{item.urlLabel || 'Link'}
-													</a>
-												)}
-											</span>
-										)}
-									</p>
-								</li>
-							))
+													)}
+												</span>
+											)}
+										</p>
+									</li>
+								);
+							})
 						}
 					</ol>
 			</section>
 
 			<section id="media-interviews" class="section-shell">
 				<div class="section-header">
-					<h2>External Media Links</h2>
-					<p>Selected external references grouped by source type.</p>
+					<h2>External Media Links</h2>					
 				</div>
 				<svg class="media-icon-defs" aria-hidden="true" focusable="false">
 					<symbol id="icon-podcast" viewBox="0 0 24 24">
@@ -1633,7 +1718,9 @@ const externalMediaCategories: MediaCategory[] = [
 								if (key) {
 									renderArea(key);
 								}
-								slice.blur();
+								if (typeof slice.blur === 'function') {
+									slice.blur();
+								}
 							});
 							slice.addEventListener('keydown', (event) => {
 								if ((event.key === 'Enter' || event.key === ' ') && key) {
@@ -1669,10 +1756,10 @@ const externalMediaCategories: MediaCategory[] = [
 	}
 
 	:global(body) {
-		--bg: #01030a;
-		--bg-soft: #050e22;
-		--surface: rgba(5, 15, 37, 0.78);
-		--surface-2: rgba(7, 23, 53, 0.84);
+		--bg: #000105;
+		--bg-soft: #020916;
+		--surface: rgba(4, 12, 30, 0.82);
+		--surface-2: rgba(6, 18, 43, 0.88);
 		--card: rgba(9, 28, 67, 0.74);
 		--line: rgba(114, 176, 255, 0.26);
 		--line-strong: rgba(145, 205, 255, 0.56);
@@ -1680,7 +1767,7 @@ const externalMediaCategories: MediaCategory[] = [
 		--text-soft: #acc7e8;
 		--accent: #58b2ff;
 		--accent-2: #8cd7ff;
-		background: #010208;
+		background: #000000;
 		color: var(--text);
 		font-family: 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
 		line-height: 1.55;
@@ -1700,30 +1787,34 @@ const externalMediaCategories: MediaCategory[] = [
 		width: 100%;
 	}
 
+	.page > :not(.aurora) {
+		position: relative;
+		z-index: 1;
+	}
+
 	.aurora {
 		inset: 0;
 		overflow: hidden;
 		pointer-events: none;
 		position: fixed;
-		z-index: -1;
+		z-index: 0;
 	}
 
 	.bg-image-layer {
-		background-image:
-			linear-gradient(180deg, rgba(1, 7, 18, 0.54) 0%, rgba(1, 7, 18, 0.72) 100%),
-			url('/backgrounds/site1-bg.png');
+		background-image: url('/backgrounds/site1-bg.png');
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
+		filter: brightness(0.4) contrast(1.06) saturate(0.82);
 		height: 100vw;
 		left: 50%;
-		opacity: 0.8;
+		opacity: 0.93;
 		position: absolute;
 		top: 50%;
 		transform: translate(-50%, -50%) rotate(90deg);
 		transform-origin: center;
 		width: 100vh;
-		z-index: -1;
+		z-index: 0;
 	}
 
 	.aurora::before,
@@ -1731,7 +1822,7 @@ const externalMediaCategories: MediaCategory[] = [
 		content: '';
 		inset: 0;
 		position: absolute;
-		z-index: 0;
+		z-index: 1;
 	}
 
 	.aurora::before {
@@ -1741,7 +1832,7 @@ const externalMediaCategories: MediaCategory[] = [
 			radial-gradient(circle at 80% 10%, rgba(160, 212, 255, 0.56) 0 1px, transparent 1.8px),
 			radial-gradient(circle at 42% 76%, rgba(178, 223, 255, 0.52) 0 1px, transparent 1.8px);
 		background-size: 180px 180px, 240px 240px, 300px 300px;
-		opacity: 0.38;
+		opacity: 0.2;
 	}
 
 	.aurora::after {
@@ -1750,19 +1841,19 @@ const externalMediaCategories: MediaCategory[] = [
 			radial-gradient(circle at 60% 35%, rgba(164, 214, 255, 0.44) 0 1px, transparent 1.7px),
 			radial-gradient(circle at 24% 64%, rgba(255, 255, 255, 0.4) 0 1px, transparent 1.7px);
 		background-size: 260px 260px, 340px 340px;
-		opacity: 0.28;
+		opacity: 0.14;
 	}
 
 	.orb {
 		border-radius: 999px;
 		filter: blur(12px);
 		position: absolute;
-		z-index: 1;
+		z-index: 2;
 	}
 
 	.orb-one {
 		animation: drift 18s ease-in-out infinite alternate;
-		background: radial-gradient(circle, rgba(86, 181, 255, 0.62) 0%, rgba(86, 181, 255, 0) 70%);
+		background: radial-gradient(circle, rgba(86, 181, 255, 0.34) 0%, rgba(86, 181, 255, 0) 70%);
 		height: min(24rem, 46vw);
 		left: 0;
 		top: 0;
@@ -1771,7 +1862,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 	.orb-two {
 		animation: drift 22s ease-in-out infinite alternate-reverse;
-		background: radial-gradient(circle, rgba(64, 223, 255, 0.45) 0%, rgba(64, 223, 255, 0) 70%);
+		background: radial-gradient(circle, rgba(64, 223, 255, 0.24) 0%, rgba(64, 223, 255, 0) 70%);
 		height: min(26rem, 48vw);
 		right: 0;
 		top: 35%;
@@ -1780,7 +1871,7 @@ const externalMediaCategories: MediaCategory[] = [
 
 	.orb-three {
 		animation: drift 26s ease-in-out infinite alternate;
-		background: radial-gradient(circle, rgba(125, 170, 255, 0.44) 0%, rgba(125, 170, 255, 0) 70%);
+		background: radial-gradient(circle, rgba(125, 170, 255, 0.24) 0%, rgba(125, 170, 255, 0) 70%);
 		bottom: 0;
 		height: min(23rem, 44vw);
 		left: 30%;
@@ -1883,6 +1974,29 @@ const externalMediaCategories: MediaCategory[] = [
 		padding: 1.1rem 0 1.6rem;
 	}
 
+	.hero-main {
+		align-items: start;
+		display: grid;
+		gap: 1.1rem;
+		grid-template-columns: minmax(0, 1fr) minmax(14rem, 17rem);
+	}
+
+	.hero-photo-wrap {
+		align-self: start;
+		justify-self: end;
+	}
+
+	.hero-photo {
+		border: 1px solid rgba(154, 221, 255, 0.38);
+		border-radius: 0.7rem;
+		box-shadow: 0 12px 24px rgba(3, 11, 28, 0.34);
+		display: block;
+		height: auto;
+		max-width: 100%;
+		object-fit: cover;
+		width: min(17rem, 30vw);
+	}
+
 	.eyebrow {
 		color: var(--accent-2);
 		display: grid;
@@ -1891,13 +2005,13 @@ const externalMediaCategories: MediaCategory[] = [
 	}
 
 	.eyebrow-flags {
-		font-size: 0.98rem;
+		font-size: 1.14rem;
 		letter-spacing: 0.2em;
 		line-height: 1;
 	}
 
 	.eyebrow-greetings {
-		font-size: 0.82rem;
+		font-size: 1.02rem;
 		font-weight: 700;
 		letter-spacing: 0.09em;
 		text-transform: uppercase;
@@ -1999,8 +2113,8 @@ const externalMediaCategories: MediaCategory[] = [
 
 	.leadership-grid {
 		display: grid;
-		gap: 0;
-		grid-template-columns: 1fr;
+		gap: 0.85rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
 	.education-grid {
@@ -2246,7 +2360,6 @@ const externalMediaCategories: MediaCategory[] = [
 		display: none !important;
 	}
 
-	.leadership-card,
 	.contact-grid article {
 		background: transparent;
 		border: 0;
@@ -2256,6 +2369,17 @@ const externalMediaCategories: MediaCategory[] = [
 		padding: 1rem 0;
 		position: relative;
 		transition: border-color 0.25s ease;
+	}
+
+	.leadership-card {
+		background: rgba(8, 24, 56, 0.62);
+		border: 1px solid rgba(122, 188, 255, 0.32);
+		border-radius: 0.5rem;
+		display: grid;
+		gap: 0.58rem;
+		padding: 0.74rem 0.78rem;
+		position: relative;
+		transition: border-color 0.22s ease, background-color 0.22s ease;
 	}
 
 	.education-card {
@@ -2274,13 +2398,17 @@ const externalMediaCategories: MediaCategory[] = [
 	}
 
 	.project-card:hover,
-	.leadership-card:hover,
 	.contact-grid article:hover {
 		border-color: var(--line-strong);
 	}
 
 	.project-card:hover {
 		background: rgba(9, 28, 67, 0.75);
+	}
+
+	.leadership-card:hover {
+		background: rgba(12, 33, 75, 0.78);
+		border-color: rgba(161, 223, 255, 0.72);
 	}
 
 	.education-card:hover {
@@ -2330,6 +2458,11 @@ const externalMediaCategories: MediaCategory[] = [
 		font-size: 1rem;
 		line-height: 1.24;
 		margin-bottom: 0;
+	}
+
+	.leadership-card .detail-list {
+		font-size: 0.88rem;
+		gap: 0.32rem;
 	}
 
 	.note {
@@ -2506,28 +2639,69 @@ const externalMediaCategories: MediaCategory[] = [
 		text-align: center;
 	}
 
-	.project-details {
-		background: transparent;
-		border: 0;
-		border-left: 2px solid rgba(125, 202, 255, 0.45);
-		border-radius: 0;
-		padding: 0.15rem 0 0.15rem 0.75rem;
+	.project-contrib {
+		display: inline-flex;
+		position: relative;
+		width: fit-content;
+		z-index: 6;
 	}
 
-	.project-details summary {
+	.project-contrib-trigger {
+		background: none;
+		border: 0;
 		color: var(--accent-2);
 		cursor: pointer;
-		font-size: 0.86rem;
+		font-size: 0.8rem;
 		font-weight: 700;
-		list-style: none;
+		line-height: 1;
+		padding: 0;
+		text-decoration: underline;
+		text-underline-offset: 0.12rem;
 	}
 
-	.project-details summary::-webkit-details-marker {
-		display: none;
+	.project-contrib-popover {
+		background: #051a3f;
+		border: 1px solid #8acbff;
+		border-radius: 0.46rem;
+		box-shadow: 0 10px 20px rgba(1, 8, 22, 0.46);
+		left: 0;
+		max-width: min(24rem, calc(100vw - 2rem));
+		opacity: 0;
+		padding: 0.52rem 0.6rem 0.56rem;
+		pointer-events: none;
+		position: absolute;
+		top: calc(100% + 0.36rem);
+		transform: translateY(5px);
+		transition: opacity 0.18s ease, transform 0.18s ease;
+		visibility: hidden;
+		width: min(24rem, calc(100vw - 2rem));
+		z-index: 12;
 	}
 
-	.project-details[open] summary {
-		margin-bottom: 0.42rem;
+	.project-contrib:hover .project-contrib-popover,
+	.project-contrib:focus-within .project-contrib-popover {
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(0);
+		visibility: visible;
+	}
+
+	.project-contrib-title {
+		color: #dff3ff;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		margin: 0 0 0.38rem !important;
+		text-transform: uppercase;
+	}
+
+	.project-contrib-list {
+		color: #d8ecff;
+		display: grid;
+		font-size: 0.83rem;
+		gap: 0.24rem;
+		margin: 0;
+		padding-left: 1rem;
 	}
 
 	.detail-list,
@@ -2611,13 +2785,16 @@ const externalMediaCategories: MediaCategory[] = [
 	.skills-chart-shell {
 		align-items: start;
 		display: grid;
-		gap: 1rem;
-		grid-template-columns: minmax(15rem, 20rem) minmax(0, 1fr);
+		gap: 0.9rem;
+		grid-template-columns: 1fr;
+		justify-items: center;
 	}
 
 	.skills-visual {
 		display: grid;
-		gap: 0.4rem;
+		gap: 0.45rem;
+		justify-items: center;
+		width: 100%;
 	}
 
 	.skills-pie {
@@ -2671,19 +2848,15 @@ const externalMediaCategories: MediaCategory[] = [
 		background: rgba(6, 20, 48, 0.62);
 		border: 1px solid rgba(122, 188, 255, 0.3);
 		border-radius: 0.42rem;
-		display: grid;
+		display: none;
 		gap: 0.45rem;
-		opacity: 0;
 		padding: 0.58rem;
-		transform: scale(0.92);
-		transform-origin: top center;
-		transition: opacity 0.24s ease, transform 0.24s ease, border-color 0.24s ease;
+		width: min(20rem, 100%);
 	}
 
 	.skills-detail.is-active {
 		border-color: rgba(172, 226, 255, 0.68);
-		opacity: 1;
-		transform: scale(1);
+		display: grid;
 	}
 
 	.skills-detail-title {
@@ -2733,6 +2906,7 @@ const externalMediaCategories: MediaCategory[] = [
 	.skills-panel {
 		display: grid;
 		gap: 0.7rem;
+		width: min(56rem, 100%);
 	}
 
 	.skills-legend {
@@ -2882,6 +3056,20 @@ const externalMediaCategories: MediaCategory[] = [
 		margin: 0;
 	}
 
+	.publication-authors {
+		color: #deecfb;
+	}
+
+	.publication-author-highlight {
+		color: #ffffff;
+		font-weight: 800;
+	}
+
+	.publication-paper-title {
+		color: #f6fbff;
+		font-weight: 700;
+	}
+
 	.publication-venue {
 		color: var(--text-soft);
 	}
@@ -3013,6 +3201,10 @@ const externalMediaCategories: MediaCategory[] = [
 			grid-template-columns: minmax(6.6rem, 7.8rem) 1fr;
 		}
 
+		.leadership-grid {
+			grid-template-columns: 1fr;
+		}
+
 		.education-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
@@ -3037,6 +3229,19 @@ const externalMediaCategories: MediaCategory[] = [
 
 		.contact-layout {
 			grid-template-columns: 1fr;
+		}
+
+		.hero-main {
+			grid-template-columns: 1fr;
+		}
+
+		.hero-photo-wrap {
+			align-self: start;
+			justify-self: start;
+		}
+
+		.hero-photo {
+			width: min(16rem, 62vw);
 		}
 	}
 

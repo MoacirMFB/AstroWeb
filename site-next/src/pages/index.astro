@@ -25,7 +25,12 @@ type ProjectCard = {
 	links?: LinkItem[];
 	images?: ProjectImage[];
 	video?: ProjectVideo;
+	videoInCarousel?: boolean;
 };
+
+type ProjectCarouselItem =
+	| { type: 'image'; image: ProjectImage }
+	| { type: 'video'; video: ProjectVideo };
 
 type AwardItem = {
 	title: string;
@@ -121,18 +126,51 @@ const getYouTubeId = (url: string): string | null => {
 	return null;
 };
 
+const getGoogleDriveFileId = (url: string): string | null => {
+	try {
+		const parsed = new URL(url);
+		if (!parsed.hostname.includes('drive.google.com')) {
+			return null;
+		}
+
+		const pathParts = parsed.pathname.split('/').filter(Boolean);
+		if (pathParts[0] === 'file' && pathParts[1] === 'd' && pathParts[2]) {
+			return pathParts[2];
+		}
+
+		const id = parsed.searchParams.get('id');
+		return id || null;
+	} catch {
+		return null;
+	}
+};
+
 const getEmbedUrl = (video: ProjectVideo): string => {
 	const id = getYouTubeId(video.url);
-	if (!id) {
-		return video.url;
+	if (id) {
+		const params = new URLSearchParams();
+		params.set('rel', '0');
+		params.set('modestbranding', '1');
+		if (video.start) {
+			params.set('start', String(video.start));
+		}
+		return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
 	}
-	const params = new URLSearchParams();
-	params.set('rel', '0');
-	params.set('modestbranding', '1');
-	if (video.start) {
-		params.set('start', String(video.start));
+
+	const driveId = getGoogleDriveFileId(video.url);
+	if (driveId) {
+		return `https://drive.google.com/file/d/${driveId}/preview`;
 	}
-	return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
+
+	return video.url;
+};
+
+const getProjectCarouselItems = (project: ProjectCard): ProjectCarouselItem[] => {
+	const imageItems = (project.images || []).map((image) => ({ type: 'image', image } as const));
+	if (project.video && project.videoInCarousel) {
+		return [{ type: 'video', video: project.video }, ...imageItems];
+	}
+	return imageItems;
 };
 
 const getYouTubeThumbnailFromUrl = (url: string): string | null => {
@@ -187,42 +225,66 @@ const splitPublicationCitation = (citation: string) => {
 };
 
 const projects: ProjectCard[] = [
-	{
-		year: '2025',
-		title: 'Gateway State Estimation via Moon-Horizon Optical Navigation',
+		{
+			year: '2025',
+			title: 'Gateway State Estimation via Moon-Horizon Optical Navigation',
 		summary:
 			'Estimated Gateway state in NRHO using only Moon-horizon imagery with CR3BP dynamics, reducing dependence on ground tracking.',
 		highlights: [
 			'Built a synthetic imaging pipeline with limb detection and conic fitting for navigation measurements.',
 			'Implemented Christian-Robinson OPNAV with EKF/UKF filtering.',
 			'Achieved km-level position and m/s-level velocity accuracy in cislunar multi-body regimes.',
-		],
-		note: 'Completed as part of AAE590 PET (2025) at Purdue University.',
-	},
-	{
-		year: '2024',
-		title: 'Distributed Consensus and Control for Multi-Satellite Debris Rendezvous',
+			],
+			note: 'Completed as part of AAE590 PET (2025) at Purdue University.',
+				images: [
+					{ src: '/projects/AAE590PET1.png', alt: 'AAE590 PET project figure 1' },
+					{ src: '/projects/AAE590PET2.png', alt: 'AAE590 PET project figure 2' },
+					{ src: '/projects/AAE590PET3.png', alt: 'AAE590 PET project figure 3' },
+					{ src: '/projects/AAE590PET4.png', alt: 'AAE590 PET project figure 4' },
+					{ src: '/projects/AAE590PET5.png', alt: 'AAE590 PET project figure 5' },
+				],
+				video: { url: 'https://drive.google.com/file/d/1UX4HTbBpxDPtS9wr6rqP6wO9B7Qv7zbv/view?usp=sharing' },
+				videoInCarousel: true,
+			},
+		{
+			year: '2024',
+			title: 'Distributed Consensus and Control for Multi-Satellite Debris Rendezvous',
 		summary:
 			'Designed a distributed estimation-and-control framework for cooperative rendezvous with large debris under J2-perturbed dynamics.',
 		highlights: [
 			'Developed distributed EKF with Metropolis consensus for a 10-spacecraft Envisat case study.',
 			'Achieved network-wide convergence in 11 iterations with 0.33 m position and 0.006 m/s velocity mean errors.',
 			'Implemented PD guidance enabling meter-level rendezvous in 600 s with ΔV below 50 m/s per agent.',
-		],
-		note: 'Completed as part of AAE590 MAAC (2024) at Purdue University.',
-	},
-	{
-		year: '2024',
-		title: 'Model Predictive Control for Direct Moon Landing from LPO',
+			],
+			note: 'Completed as part of AAE590 MAAC (2024) at Purdue University.',
+			images: [
+				{ src: '/projects/AAE590MAAC1.png', alt: 'AAE590 MAAC project figure 1' },
+				{ src: '/projects/AAE590MAAC2.png', alt: 'AAE590 MAAC project figure 2' },
+				{ src: '/projects/AAE590MAAC3.png', alt: 'AAE590 MAAC project figure 3' },
+				{ src: '/projects/AAE590MAAC4.png', alt: 'AAE590 MAAC project figure 4' },
+				{ src: '/projects/AAE590MAAC5.png', alt: 'AAE590 MAAC project figure 5' },
+				{ src: '/projects/AAE590MAAC6.png', alt: 'AAE590 MAAC project figure 6' },
+				{ src: '/projects/AAE590MAAC7.png', alt: 'AAE590 MAAC project figure 7' },
+			],
+		},
+		{
+			year: '2024',
+			title: 'Model Predictive Control for Direct Moon Landing from LPO',
 		summary:
 			'Developed a convex MPC framework for direct transfers from Libration Point Orbits to targeted lunar surface landing sites.',
 		highlights: [
 			'Focused on precision landing scenarios near the lunar south pole.',
 			'Implemented conditional collision constraints within a linearized CR3BP dynamics model.',
 			'Demonstrated trajectory tracking and perturbation adaptation using state and control penalty tuning.',
-		],
-		note: 'Completed as part of AAE590 Advanced Control Applications (2024) at Purdue University.',
-	},
+			],
+			note: 'Completed as part of AAE590 Advanced Control Applications (2024) at Purdue University.',
+			images: [
+				{ src: '/projects/AAE590ACA1.png', alt: 'AAE590 ACA project figure 1' },
+				{ src: '/projects/AAE590ACA2.png', alt: 'AAE590 ACA project figure 2' },
+				{ src: '/projects/AAE590ACA3.png', alt: 'AAE590 ACA project figure 3' },
+				{ src: '/projects/AAE590ACA4.jpg', alt: 'AAE590 ACA project figure 4' },
+			],
+		},
 	{
 		year: '2023',
 		title: 'Orbital pursuer evasion game with incomplete information - class project',
@@ -889,8 +951,7 @@ const externalMediaCategories: MediaCategory[] = [
 									project.highlights && (
 										<div class="project-contrib">
 											<button type="button" class="project-contrib-trigger">Key Contributions</button>
-											<div class="project-contrib-popover" role="tooltip">
-												<p class="project-contrib-title">Key Contributions</p>
+											<div class="project-contrib-popover" role="tooltip">												
 												<ul class="project-contrib-list">
 												{project.highlights.map((item) => (
 													<li>{item}</li>
@@ -901,59 +962,90 @@ const externalMediaCategories: MediaCategory[] = [
 									)
 								}
 								{
-									project.images && project.images.length > 0 && (
-										<div class="project-gallery-wrap">
-											<p class="gallery-label">Original Project Images</p>
-											<div class="project-carousel" data-carousel>
-												<button
-													type="button"
-													class="carousel-control"
-													data-carousel-prev
-													aria-label={`Previous image for ${project.title}`}
-												>
-													‹
-												</button>
-												<div class="project-gallery" role="region" aria-label={`${project.title} image carousel`}>
-													{project.images.map((image, index) => (
-														<figure
-															class={`gallery-item ${index === 0 ? 'is-active' : ''}`}
-															data-carousel-slide
-															aria-hidden={index === 0 ? 'false' : 'true'}
-														>
-															<img
-																class="gallery-image"
-																src={image.src}
-																alt={image.alt}
-																loading="eager"
-																decoding="async"
-															/>
-														</figure>
-													))}
-												</div>
-												<button
-													type="button"
-													class="carousel-control"
-													data-carousel-next
-													aria-label={`Next image for ${project.title}`}
-												>
-													›
-												</button>
-												<div class="carousel-dots" role="tablist" aria-label={`${project.title} image selection`}>
-													{
-														project.images.map((_, index) => (
-															<button
-																type="button"
-																class={`carousel-dot ${index === 0 ? 'is-active' : ''}`}
-																data-carousel-dot
-																aria-label={`Go to image ${index + 1}`}
-																aria-selected={index === 0 ? 'true' : 'false'}
-															></button>
-														))
-													}
+									(() => {
+										const carouselItems = getProjectCarouselItems(project);
+										if (carouselItems.length === 0) {
+											return null;
+										}
+										return (
+											<div class="project-gallery-wrap">
+												<div class="project-carousel" data-carousel>
+													<button
+														type="button"
+														class="carousel-control"
+														data-carousel-prev
+														aria-label={`Previous item for ${project.title}`}
+													>
+														‹
+													</button>
+														<div class="project-gallery" role="region" aria-label={`${project.title} media carousel`}>
+															{carouselItems.map((item, index) => (
+																<figure
+																	class={`gallery-item ${item.type === 'video' ? 'gallery-item--video ' : ''}${index === 0 ? 'is-active' : ''}`}
+																	data-carousel-slide
+																	data-lightbox-kind={item.type}
+																	data-lightbox-src={item.type === 'video' ? getEmbedUrl(item.video) : item.image.src}
+																	data-lightbox-alt={item.type === 'video' ? `${project.title} video preview` : item.image.alt}
+																	aria-hidden={index === 0 ? 'false' : 'true'}
+																>
+																	{
+																		item.type === 'video' ? (
+																			<div class="gallery-video-wrap">
+																			<iframe
+																				title={`${project.title} video preview`}
+																				src={getEmbedUrl(item.video)}
+																				loading="lazy"
+																				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+																				referrerpolicy="strict-origin-when-cross-origin"
+																				allowfullscreen
+																			></iframe>
+																			<button
+																				type="button"
+																				class="gallery-video-open"
+																				data-gallery-video-open
+																				aria-label={`Open larger video for ${project.title}`}
+																			>
+																				<span>Open Large</span>
+																			</button>
+																		</div>
+																	) : (
+																		<img
+																			class="gallery-image"
+																			src={item.image.src}
+																			alt={item.image.alt}
+																			loading="eager"
+																			decoding="async"
+																		/>
+																	)
+																}
+															</figure>
+														))}
+													</div>
+													<button
+														type="button"
+														class="carousel-control"
+														data-carousel-next
+														aria-label={`Next item for ${project.title}`}
+													>
+														›
+													</button>
+													<div class="carousel-dots" role="tablist" aria-label={`${project.title} media selection`}>
+														{
+															carouselItems.map((_, index) => (
+																<button
+																	type="button"
+																	class={`carousel-dot ${index === 0 ? 'is-active' : ''}`}
+																	data-carousel-dot
+																	aria-label={`Go to item ${index + 1}`}
+																	aria-selected={index === 0 ? 'true' : 'false'}
+																></button>
+															))
+														}
+													</div>
 												</div>
 											</div>
-										</div>
-									)
+										);
+									})()
 								}
 							{project.note && <p class="note">{project.note}</p>}
 							{
@@ -970,7 +1062,7 @@ const externalMediaCategories: MediaCategory[] = [
 								)
 							}
 							{
-								project.video && (
+								project.video && !project.videoInCarousel && (
 									<div class="video-wrap">
 										<iframe
 											title={`${project.title} video preview`}
@@ -1338,7 +1430,7 @@ const externalMediaCategories: MediaCategory[] = [
 				<p>© Moacir Fonseca Becker</p>				
 			</footer>
 
-			<div class="image-lightbox" data-image-lightbox aria-hidden="true">
+				<div class="image-lightbox" data-image-lightbox aria-hidden="true" role="dialog" aria-modal="true">
 				<button
 					type="button"
 					class="lightbox-close"
@@ -1347,8 +1439,35 @@ const externalMediaCategories: MediaCategory[] = [
 				>
 					×
 				</button>
+				<button
+					type="button"
+					class="lightbox-control lightbox-control--prev"
+					data-lightbox-prev
+					aria-label="Previous expanded image"
+				>
+					‹
+				</button>
+				<button
+					type="button"
+					class="lightbox-control lightbox-control--next"
+					data-lightbox-next
+					aria-label="Next expanded image"
+				>
+					›
+				</button>
 				<figure class="lightbox-figure">
 					<img data-lightbox-image src="" alt="" />
+					<div class="lightbox-video-wrap" data-lightbox-video-wrap hidden>
+						<iframe
+							data-lightbox-video
+							src=""
+							title="Expanded project video"
+							loading="lazy"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							referrerpolicy="strict-origin-when-cross-origin"
+							allowfullscreen
+						></iframe>
+					</div>
 					<figcaption data-lightbox-caption></figcaption>
 				</figure>
 			</div>
@@ -1450,20 +1569,94 @@ const externalMediaCategories: MediaCategory[] = [
 
 				const lightbox = document.querySelector('[data-image-lightbox]');
 				const lightboxImage = document.querySelector('[data-lightbox-image]');
+				const lightboxVideoWrap = document.querySelector('[data-lightbox-video-wrap]');
+				const lightboxVideo = document.querySelector('[data-lightbox-video]');
 				const lightboxCaption = document.querySelector('[data-lightbox-caption]');
 				const lightboxClose = document.querySelector('[data-lightbox-close]');
+				const lightboxPrev = document.querySelector('[data-lightbox-prev]');
+				const lightboxNext = document.querySelector('[data-lightbox-next]');
 				const galleryImages = Array.from(document.querySelectorAll('.gallery-image'));
+				const galleryVideoOpenButtons = Array.from(document.querySelectorAll('[data-gallery-video-open]'));
+				let lightboxSlides = [];
+				let lightboxIndex = 0;
 
-				const openLightbox = (src, alt) => {
+				const getCarouselSlides = (carousel) => {
+					if (!carousel) {
+						return [];
+					}
+					return Array.from(carousel.querySelectorAll('[data-carousel-slide]'))
+						.map((slide) => ({
+							node: slide,
+							kind: slide.getAttribute('data-lightbox-kind') === 'video' ? 'video' : 'image',
+							src: slide.getAttribute('data-lightbox-src') || '',
+							alt: slide.getAttribute('data-lightbox-alt') || '',
+						}))
+						.filter((entry) => entry.src.length > 0);
+				};
+
+				const renderLightbox = () => {
 					if (!lightbox || !lightboxImage || !lightboxCaption) {
 						return;
 					}
-					lightboxImage.setAttribute('src', src);
-					lightboxImage.setAttribute('alt', alt || 'Expanded project image');
-					lightboxCaption.textContent = alt || '';
+					const currentSlide = lightboxSlides[lightboxIndex];
+					if (!currentSlide) {
+						return;
+					}
+
+					const isVideo = currentSlide.kind === 'video';
+					if (isVideo) {
+						if (!lightboxVideoWrap || !lightboxVideo) {
+							return;
+						}
+						lightboxImage.setAttribute('hidden', '');
+						lightboxImage.setAttribute('src', '');
+						lightboxImage.setAttribute('alt', '');
+						lightboxVideoWrap.removeAttribute('hidden');
+						lightboxVideo.setAttribute('src', currentSlide.src);
+						lightboxVideo.setAttribute('title', currentSlide.alt || 'Expanded project video');
+					} else {
+						lightboxVideo?.setAttribute('src', '');
+						lightboxVideoWrap?.setAttribute('hidden', '');
+						lightboxImage.removeAttribute('hidden');
+						lightboxImage.setAttribute('src', currentSlide.src);
+						lightboxImage.setAttribute('alt', currentSlide.alt || 'Expanded project image');
+					}
+
+					lightboxCaption.textContent = currentSlide.alt || '';
+					const hasMultiple = lightboxSlides.length > 1;
+					lightboxPrev?.toggleAttribute('hidden', !hasMultiple);
+					lightboxNext?.toggleAttribute('hidden', !hasMultiple);
+				};
+
+				const openLightbox = (slides, startIndex) => {
+					if (!lightbox || !lightboxImage || !lightboxCaption || !Array.isArray(slides) || slides.length === 0) {
+						return;
+					}
+					lightboxSlides = slides
+						.map((slide) => ({
+							kind: slide.kind === 'video' ? 'video' : 'image',
+							src: slide.src || '',
+							alt: slide.alt || '',
+						}))
+						.filter((slide) => slide.src.length > 0);
+					if (lightboxSlides.length === 0) {
+						return;
+					}
+
+					const normalizedStart = Number.isFinite(startIndex) ? startIndex : 0;
+					lightboxIndex = ((normalizedStart % lightboxSlides.length) + lightboxSlides.length) % lightboxSlides.length;
+					renderLightbox();
 					lightbox.classList.add('is-open');
 					lightbox.setAttribute('aria-hidden', 'false');
 					document.body.classList.add('lightbox-open');
+				};
+
+				const stepLightbox = (delta) => {
+					if (lightboxSlides.length <= 1) {
+						return;
+					}
+					lightboxIndex = (lightboxIndex + delta + lightboxSlides.length) % lightboxSlides.length;
+					renderLightbox();
 				};
 
 				const closeLightbox = () => {
@@ -1472,21 +1665,53 @@ const externalMediaCategories: MediaCategory[] = [
 					}
 					lightbox.classList.remove('is-open');
 					lightbox.setAttribute('aria-hidden', 'true');
+					lightboxImage.removeAttribute('hidden');
 					lightboxImage.setAttribute('src', '');
 					lightboxImage.setAttribute('alt', '');
+					lightboxVideo?.setAttribute('src', '');
+					lightboxVideoWrap?.setAttribute('hidden', '');
 					lightboxCaption.textContent = '';
+					lightboxSlides = [];
+					lightboxIndex = 0;
+					lightboxPrev?.setAttribute('hidden', '');
+					lightboxNext?.setAttribute('hidden', '');
 					document.body.classList.remove('lightbox-open');
 				};
 
 				galleryImages.forEach((image) => {
 					image.addEventListener('click', () => {
-						const src = image.getAttribute('src') || '';
-						const alt = image.getAttribute('alt') || '';
-						openLightbox(src, alt);
+						const carousel = image.closest('[data-carousel]');
+						const slide = image.closest('[data-carousel-slide]');
+						const slides = getCarouselSlides(carousel);
+						const index = Math.max(
+							0,
+							slides.findIndex((entry) => entry.node === slide),
+						);
+						openLightbox(slides, index);
+					});
+				});
+
+				galleryVideoOpenButtons.forEach((button) => {
+					button.addEventListener('click', (event) => {
+						event.preventDefault();
+						const carousel = button.closest('[data-carousel]');
+						const slide = button.closest('[data-carousel-slide]');
+						const slides = getCarouselSlides(carousel);
+						const index = Math.max(
+							0,
+							slides.findIndex((entry) => entry.node === slide),
+						);
+						openLightbox(slides, index);
 					});
 				});
 
 				lightboxClose?.addEventListener('click', closeLightbox);
+				lightboxPrev?.addEventListener('click', () => {
+					stepLightbox(-1);
+				});
+				lightboxNext?.addEventListener('click', () => {
+					stepLightbox(1);
+				});
 				lightbox?.addEventListener('click', (event) => {
 					if (event.target === lightbox) {
 						closeLightbox();
@@ -1496,6 +1721,16 @@ const externalMediaCategories: MediaCategory[] = [
 				document.addEventListener('keydown', (event) => {
 					if (event.key === 'Escape') {
 						closeLightbox();
+						return;
+					}
+					if (!lightbox?.classList.contains('is-open')) {
+						return;
+					}
+					if (event.key === 'ArrowLeft') {
+						stepLightbox(-1);
+					}
+					if (event.key === 'ArrowRight') {
+						stepLightbox(1);
 					}
 				});
 
@@ -1877,7 +2112,7 @@ const externalMediaCategories: MediaCategory[] = [
 		width: 100%;
 	}
 
-	.page > :not(.aurora) {
+	.page > :not(.aurora):not(.image-lightbox) {
 		position: relative;
 		z-index: 1;
 	}
@@ -2645,6 +2880,49 @@ const externalMediaCategories: MediaCategory[] = [
 		cursor: zoom-in;
 	}
 
+	.gallery-video-wrap {
+		border: 1px solid rgba(112, 182, 255, 0.28);
+		border-radius: 0;
+		height: 100%;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.gallery-video-wrap iframe {
+		border: 0;
+		display: block;
+		height: 100%;
+		width: 100%;
+	}
+
+	.gallery-video-open {
+		align-items: center;
+		background: linear-gradient(180deg, rgba(1, 10, 28, 0.15), rgba(1, 10, 28, 0.45));
+		border: 0;
+		color: #f1fbff;
+		cursor: zoom-in;
+		display: inline-flex;
+		font-weight: 700;
+		inset: 0;
+		justify-content: center;
+		padding: 0;
+		position: absolute;
+	}
+
+	.gallery-video-open span {
+		background: rgba(3, 16, 40, 0.86);
+		border: 1px solid rgba(154, 220, 255, 0.8);
+		border-radius: 999px;
+		font-size: 0.74rem;
+		letter-spacing: 0.04em;
+		padding: 0.3rem 0.62rem;
+		text-transform: uppercase;
+	}
+
+	.gallery-video-open:hover span {
+		background: rgba(18, 54, 108, 0.92);
+	}
+
 	.gallery-item:hover img {
 		transform: scale(1.03);
 	}
@@ -2706,6 +2984,45 @@ const externalMediaCategories: MediaCategory[] = [
 		width: 2.2rem;
 	}
 
+	.lightbox-control {
+		align-items: center;
+		background: rgba(5, 19, 44, 0.88);
+		border: 1px solid rgba(149, 215, 255, 0.78);
+		border-radius: 999px;
+		color: #eef9ff;
+		cursor: pointer;
+		display: inline-flex;
+		font-size: 1.9rem;
+		font-weight: 700;
+		height: 2.8rem;
+		justify-content: center;
+		line-height: 1;
+		padding: 0;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		transition: background-color 0.2s ease, border-color 0.2s ease;
+		width: 2.8rem;
+		z-index: 3;
+	}
+
+	.lightbox-control:hover {
+		background: rgba(33, 89, 168, 0.78);
+		border-color: rgba(190, 233, 255, 0.95);
+	}
+
+	.lightbox-control[hidden] {
+		display: none;
+	}
+
+	.lightbox-control--prev {
+		left: clamp(0.65rem, 2vw, 1.35rem);
+	}
+
+	.lightbox-control--next {
+		right: clamp(0.65rem, 2vw, 1.35rem);
+	}
+
 	.lightbox-figure {
 		display: grid;
 		gap: 0.5rem;
@@ -2722,11 +3039,31 @@ const externalMediaCategories: MediaCategory[] = [
 		width: auto;
 	}
 
+	.lightbox-video-wrap {
+		width: min(92vw, 64rem);
+	}
+
+	.lightbox-video-wrap iframe {
+		aspect-ratio: 16 / 9;
+		border: 0;
+		display: block;
+		max-height: 82vh;
+		width: 100%;
+	}
+
 	.lightbox-figure figcaption {
 		color: #b9ddff;
 		font-size: 0.9rem;
 		margin: 0;
 		text-align: center;
+	}
+
+	@media (max-width: 640px) {
+		.lightbox-control {
+			font-size: 1.6rem;
+			height: 2.45rem;
+			width: 2.45rem;
+		}
 	}
 
 	.project-contrib {

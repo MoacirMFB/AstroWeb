@@ -11,6 +11,11 @@ type ProjectVideo = {
 	start?: number;
 };
 
+type ProjectImage = {
+	src: string;
+	alt: string;
+};
+
 type ProjectCard = {
 	year: string;
 	title: string;
@@ -18,6 +23,7 @@ type ProjectCard = {
 	highlights?: string[];
 	note?: string;
 	links?: LinkItem[];
+	images?: ProjectImage[];
 	video?: ProjectVideo;
 };
 
@@ -44,6 +50,14 @@ type VideoFeature = {
 	title: string;
 	description?: string;
 	video: ProjectVideo;
+};
+
+type PublicationItem = {
+	citation: string;
+	venue: string;
+	doi?: string;
+	url?: string;
+	urlLabel?: string;
 };
 
 const navLinks: LinkItem[] = [
@@ -125,6 +139,16 @@ const projects: ProjectCard[] = [
 			'Machine learning project focused on translating Mars surface imagery into color representations using CycleGAN methods.',
 		note: 'Completed as part of Machine Learning (STAT598 / ECE595) at Purdue University.',
 		links: [{ label: 'GitHub Repository', href: 'https://github.com/MoacirMFB/Mars_CycleGAN' }],
+		images: [
+			{ src: '/projects/A1-1536x887.png', alt: 'CycleGAN Mars translation sample A1' },
+			{ src: '/projects/A2-1536x862.png', alt: 'CycleGAN Mars translation sample A2' },
+			{ src: '/projects/A3-1536x909.png', alt: 'CycleGAN Mars translation sample A3' },
+			{ src: '/projects/B1-1536x856.png', alt: 'CycleGAN Mars translation sample B1' },
+			{ src: '/projects/B2-1536x836.png', alt: 'CycleGAN Mars translation sample B2' },
+			{ src: '/projects/B3-1536x848.png', alt: 'CycleGAN Mars translation sample B3' },
+			{ src: '/projects/C2-1536x761.png', alt: 'CycleGAN Mars translation sample C2' },
+			{ src: '/projects/C3-1536x855.png', alt: 'CycleGAN Mars translation sample C3' },
+		],
 	},
 	{
 		year: '2023',
@@ -137,6 +161,16 @@ const projects: ProjectCard[] = [
 			'Observed links between node centrality and model accuracy variance.',
 		],
 		note: 'Completed as part of Systems of Systems (AAE56000) at Purdue University.',
+		images: [
+			{
+				src: '/projects/560_Project_2-1-1024x630.png',
+				alt: 'Distributed machine learning architecture diagram',
+			},
+			{
+				src: '/projects/560_Project_1-1-1021x1024.png',
+				alt: 'Distributed machine learning results figure',
+			},
+		],
 	},
 	{
 		year: '2019-22',
@@ -232,6 +266,14 @@ const projects: ProjectCard[] = [
 				href: 'http://peru.marssociety.org/wp-content/uploads/2018/02/Team-Peru-and-Team-Latam-Application-Guide-2018.pdf',
 			},
 		],
+		images: [
+			{ src: '/projects/Hexapod2-1024x741.png', alt: 'Hexapod robot prototype image 1' },
+			{ src: '/projects/Hexapod3-1024x777.jpg', alt: 'Hexapod robot prototype image 2' },
+			{
+				src: '/projects/Pic-2016-Hexapod-Robot-Based-on-Arthropod-Locomotion-for-Difficult-Exploration-Areas-on-Mars-1.png',
+				alt: 'Hexapod robot project field image',
+			},
+		],
 	},
 	{
 		year: '2015',
@@ -244,6 +286,15 @@ const projects: ProjectCard[] = [
 			'Managed turbomolecular pump control and mission power distribution.',
 		],
 		links: [{ label: 'Gaslab YouTube Channel', href: 'https://www.youtube.com/user/GasLabUCR' }],
+		images: [
+			{ src: '/projects/minigas4-1024x818.jpg', alt: 'Mass spectrometer control project image 1' },
+			{ src: '/projects/MassSpec1-1024x562.jpg', alt: 'Mass spectrometer control project image 2' },
+			{ src: '/projects/minigas1-1024x523.jpg', alt: 'Mass spectrometer control project image 3' },
+			{ src: '/projects/MassSpec2-1024x560.jpg', alt: 'Mass spectrometer control project image 4' },
+			{ src: '/projects/minigas3-1024x769.jpg', alt: 'Mass spectrometer control project image 5' },
+			{ src: '/projects/minigas6-1024x759.jpg', alt: 'Mass spectrometer control project image 6' },
+			{ src: '/projects/minigas5-1024x883.jpg', alt: 'Mass spectrometer control project image 7' },
+		],
 	},
 	{
 		year: '2015-16',
@@ -255,6 +306,7 @@ const projects: ProjectCard[] = [
 			'Supported unattended multi-day autonomous operation.',
 		],
 		links: [{ label: 'NTCR Consulting', href: 'http://www.ntcrconsulting.com/' }],
+		images: [{ src: '/projects/GasLab-p2-1-1024x768.jpg', alt: 'Controller box system hardware image' }],
 	},
 	{
 		year: '2014',
@@ -405,13 +457,59 @@ const education: EducationItem[] = [
 	},
 ];
 
-const publications = [
-	'[1] Moacir, B., Reynel, G., Francisco, S., Mauricio, A., Eduardo, G., Fernando, Z., Luis, M., Carlos, A., Maria Jose, M. and Oliver, S, 2022. Morazan Project Ground and Space Systems: Results of a Successful Preliminary Design for Space and Ground Segments, International Cooperation, Knowledge Transfer and Lessons Learned. In: 73rd International Astronautical Congress, Paris.',
-	'[2] Javier, M., Vilma, O., Eduardo, G., Fernando, Z., Moacir, B., Luis, M., Carlos, A., Maria Jose, M. and Oliver, S., 2020. Cabanas: First Honduran Academic Ground Station for small satellite missions. In: 71st International Astronautical Congress.',
-	'[3] Javier, M., Moacir, B., Luis, M., Eduardo, G., Maria Jose, M., Oliver, S., Carlos E., A. and Fernando, Z., 2020. Paving the way to the stars: Inclusion and education through space. In: International Astronautical Congress Cyberspace edition. International Astronautical Federation.',
-	'[4] Moacir, B., Aureliano, R., Alexander, O., Shirrel, A., Yanina, H., Rudiger, J., Olga, Z., Singh, P. and Tiago, S., 2019. Space Station Concept for Active Debris Removal Applying EcoDesign Principles. In: 70th International Astronautical Congress.',
-	'[5] Luis, M., Moacir, B., Carlos E., A., Maria Jose, M., Fernando, Z., Javier, M., Eduardo, G. and Oliver, S., 2019. Morazan MRZ-SAT CubeSat project for integration of the Central American Nations through collaboration in Space. In: 70th International Astronautical Congress. International Astronautical Federation.',
-	'[6] Moacir, B., Nicole, C., Carlos, M., Renato, R. and Ernesto, C., 2017. Analysis of scaled robotic arm manipulators under microgravity conditions. In: 68th International Astronautical Congress. Adelaide: International Astronautical Federation.',
+const publications: PublicationItem[] = [
+	{
+		citation:
+			'[1] Becker, M.F., 2026. Virtual Thrust-Based Control Formulation for Multiple Kinetic Impactor Asteroid Deflection.',
+		venue:
+			'Accepted for oral presentation at the 27th International Symposium on Space Flight Dynamics (ISSFD 2026), Toulouse, France, June 1-5, 2026.',
+	},
+	{
+		citation:
+			'[2] Schmitt, R.N., Becker, M.F., DeLaurentis, D., Capannolo, A., 2025. An Explainability-Based Framework for Evaluating Space Mission Architectures Using Sandbox Games.',
+		venue: 'Aerotecnica Missili & Spazio, pp. 1-26.',
+		doi: '10.1007/s42496-025-00293-1',
+	},
+	{
+		citation:
+			'[3] Schmitt, R.N., Becker, M.F., DeLaurentis, D., Oguri, K., 2025. Design of Space Systems and Operational Mission Architectures Using Sandbox Games.',
+		venue: 'Acta Astronautica.',
+		doi: '10.1016/j.actaastro.2025.04.004',
+	},
+	{
+		citation:
+			'[4] Becker, M.F., Reynel, G., Francisco, S., Mauricio, A., Eduardo, G., Fernando, Z., Luis, M., Carlos, A., Maria Jose, M., Oliver, S., 2022. Morazan Project Ground and Space Systems: Results of a Successful Preliminary Design for Space and Ground Segments, International Cooperation, Knowledge Transfer and Lessons Learned.',
+		venue: 'In: 73rd International Astronautical Congress, Paris.',
+		url: 'https://iafastro.directory/iac/paper/id/59527/summary/',
+		urlLabel: 'IAC summary',
+	},
+	{
+		citation:
+			'[5] Javier, M., Vilma, O., Eduardo, G., Fernando, Z., Becker, M.F., Luis, M., Carlos, A., Maria Jose, M., Oliver, S., 2020. Cabanas: First Honduran Academic Ground Station for small satellite missions.',
+		venue: 'In: 71st International Astronautical Congress.',
+		url: 'https://iafastro.directory/iac/paper/id/59527/summary/',
+		urlLabel: 'IAC summary',
+	},
+	{
+		citation:
+			'[6] Javier, M., Becker, M.F., Luis, M., Eduardo, G., Maria Jose, M., Oliver, S., Carlos E., A., Fernando, Z., 2020. Paving the way to the stars: Inclusion and education through space.',
+		venue: 'In: International Astronautical Congress Cyberspace Edition. International Astronautical Federation.',
+	},
+	{
+		citation:
+			'[7] Becker, M.F., Aureliano, R., Alexander, O., Shirrel, A., Yanina, H., Rudiger, J., Olga, Z., Singh, P., Tiago, S., 2019. Space Station Concept for Active Debris Removal Applying EcoDesign Principles.',
+		venue: 'In: 70th International Astronautical Congress.',
+	},
+	{
+		citation:
+			'[8] Luis, M., Becker, M.F., Carlos E., A., Maria Jose, M., Fernando, Z., Javier, M., Eduardo, G., Oliver, S., 2019. Morazan MRZ-SAT CubeSat project for integration of the Central American Nations through collaboration in Space.',
+		venue: 'In: 70th International Astronautical Congress. International Astronautical Federation.',
+	},
+	{
+		citation:
+			'[9] Becker, M.F., Nicole, C., Carlos, M., Renato, R., Ernesto, C., 2017. Analysis of scaled robotic arm manipulators under microgravity conditions.',
+		venue: 'In: 68th International Astronautical Congress. Adelaide: International Astronautical Federation.',
+	},
 ];
 
 const mediaFeatures: VideoFeature[] = [
@@ -507,15 +605,29 @@ const mediaFeatures: VideoFeature[] = [
 							data-era={getProjectEra(project.year)}
 							data-has-video={project.video ? 'true' : 'false'}
 						>
-							<div class="card-header">
-								<p class="year">{project.year}</p>
-								{project.video && <span class="video-chip">Video Preview</span>}
-							</div>
-							<h3>{project.title}</h3>
-							<p>{project.summary}</p>
-							{
-								project.highlights && (
-									<details class="project-details">
+								<div class="card-header">
+									<p class="year">{project.year}</p>
+									{project.video && <span class="video-chip">Video Preview</span>}
+								</div>
+								<h3>{project.title}</h3>
+								<p>{project.summary}</p>
+								{
+									project.images && project.images.length > 0 && (
+										<div class="project-gallery-wrap">
+											<p class="gallery-label">Original Project Images</p>
+											<div class="project-gallery">
+												{project.images.map((image) => (
+													<figure class="gallery-item">
+														<img src={image.src} alt={image.alt} loading="eager" decoding="async" />
+													</figure>
+												))}
+											</div>
+										</div>
+									)
+								}
+								{
+									project.highlights && (
+										<details class="project-details">
 										<summary>Key Contributions</summary>
 										<ul class="detail-list">
 											{project.highlights.map((item) => (
@@ -659,14 +771,40 @@ const mediaFeatures: VideoFeature[] = [
 			</div>
 		</section>
 
-		<section id="publications" class="section-shell">
-			<div class="section-header">
-				<h2>Publications</h2>
-			</div>
-			<ol class="publication-list">
-				{publications.map((item) => <li>{item}</li>)}
-			</ol>
-		</section>
+			<section id="publications" class="section-shell">
+				<div class="section-header">
+					<h2>Publications</h2>
+				</div>
+				<ol class="publication-list">
+					{
+						publications.map((item) => (
+							<li class="publication-item">
+								<p class="publication-citation">{item.citation}</p>
+								<p class="publication-venue">{item.venue}</p>
+								{(item.doi || item.url) && (
+									<p class="publication-links">
+										{item.doi && (
+											<a
+												class="pill-link"
+												href={`https://doi.org/${item.doi}`}
+												target="_blank"
+												rel="noreferrer"
+											>
+												DOI
+											</a>
+										)}
+										{item.url && (
+											<a class="pill-link" href={item.url} target="_blank" rel="noreferrer">
+												{item.urlLabel || 'Link'}
+											</a>
+										)}
+									</p>
+								)}
+							</li>
+						))
+					}
+				</ol>
+			</section>
 
 		<section id="media-interviews" class="section-shell">
 			<div class="section-header">
@@ -796,20 +934,21 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	:global(body) {
-		--bg: #06142d;
-		--bg-soft: #0e2b58;
-		--surface: rgba(9, 29, 63, 0.72);
-		--surface-2: rgba(10, 40, 86, 0.82);
-		--card: rgba(14, 52, 108, 0.68);
-		--line: rgba(137, 198, 255, 0.36);
-		--line-strong: rgba(137, 198, 255, 0.6);
-		--text: #e9f4ff;
-		--text-soft: #b9d6f6;
-		--accent: #4fc3ff;
-		--accent-2: #78e3ff;
+		--bg: #01030a;
+		--bg-soft: #050e22;
+		--surface: rgba(5, 15, 37, 0.78);
+		--surface-2: rgba(7, 23, 53, 0.84);
+		--card: rgba(9, 28, 67, 0.74);
+		--line: rgba(114, 176, 255, 0.26);
+		--line-strong: rgba(145, 205, 255, 0.56);
+		--text: #edf5ff;
+		--text-soft: #acc7e8;
+		--accent: #58b2ff;
+		--accent-2: #8cd7ff;
 		background:
-			linear-gradient(148deg, #041126 0%, #07214a 37%, #0d3b7a 72%, #07224a 100%),
-			#041126;
+			radial-gradient(circle at 12% 8%, rgba(46, 109, 203, 0.34) 0%, rgba(46, 109, 203, 0) 36%),
+			radial-gradient(circle at 86% 24%, rgba(82, 157, 255, 0.2) 0%, rgba(82, 157, 255, 0) 42%),
+			linear-gradient(160deg, #010208 0%, #020713 45%, #05122d 100%);
 		color: var(--text);
 		font-family: 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
 		line-height: 1.55;
@@ -832,38 +971,66 @@ const mediaFeatures: VideoFeature[] = [
 		z-index: -1;
 	}
 
+	.aurora::before,
+	.aurora::after {
+		content: '';
+		inset: 0;
+		position: absolute;
+		z-index: 0;
+	}
+
+	.aurora::before {
+		animation: starDrift 130s linear infinite;
+		background-image:
+			radial-gradient(circle at 15% 22%, rgba(255, 255, 255, 0.68) 0 1px, transparent 1.8px),
+			radial-gradient(circle at 80% 10%, rgba(160, 212, 255, 0.56) 0 1px, transparent 1.8px),
+			radial-gradient(circle at 42% 76%, rgba(178, 223, 255, 0.52) 0 1px, transparent 1.8px);
+		background-size: 180px 180px, 240px 240px, 300px 300px;
+		opacity: 0.38;
+	}
+
+	.aurora::after {
+		animation: starDrift 190s linear infinite reverse;
+		background-image:
+			radial-gradient(circle at 60% 35%, rgba(164, 214, 255, 0.44) 0 1px, transparent 1.7px),
+			radial-gradient(circle at 24% 64%, rgba(255, 255, 255, 0.4) 0 1px, transparent 1.7px);
+		background-size: 260px 260px, 340px 340px;
+		opacity: 0.28;
+	}
+
 	.orb {
 		border-radius: 999px;
 		filter: blur(12px);
 		position: absolute;
+		z-index: 1;
 	}
 
-		.orb-one {
-			animation: drift 18s ease-in-out infinite alternate;
-			background: radial-gradient(circle, rgba(86, 181, 255, 0.62) 0%, rgba(86, 181, 255, 0) 70%);
-			height: min(24rem, 46vw);
-			left: 0;
-			top: 0;
-			width: min(24rem, 46vw);
-		}
+	.orb-one {
+		animation: drift 18s ease-in-out infinite alternate;
+		background: radial-gradient(circle, rgba(86, 181, 255, 0.62) 0%, rgba(86, 181, 255, 0) 70%);
+		height: min(24rem, 46vw);
+		left: 0;
+		top: 0;
+		width: min(24rem, 46vw);
+	}
 
-		.orb-two {
-			animation: drift 22s ease-in-out infinite alternate-reverse;
-			background: radial-gradient(circle, rgba(64, 223, 255, 0.45) 0%, rgba(64, 223, 255, 0) 70%);
-			height: min(26rem, 48vw);
-			right: 0;
-			top: 35%;
-			width: min(26rem, 48vw);
-		}
+	.orb-two {
+		animation: drift 22s ease-in-out infinite alternate-reverse;
+		background: radial-gradient(circle, rgba(64, 223, 255, 0.45) 0%, rgba(64, 223, 255, 0) 70%);
+		height: min(26rem, 48vw);
+		right: 0;
+		top: 35%;
+		width: min(26rem, 48vw);
+	}
 
-		.orb-three {
-			animation: drift 26s ease-in-out infinite alternate;
-			background: radial-gradient(circle, rgba(125, 170, 255, 0.44) 0%, rgba(125, 170, 255, 0) 70%);
-			bottom: 0;
-			height: min(23rem, 44vw);
-			left: 30%;
-			width: min(23rem, 44vw);
-		}
+	.orb-three {
+		animation: drift 26s ease-in-out infinite alternate;
+		background: radial-gradient(circle, rgba(125, 170, 255, 0.44) 0%, rgba(125, 170, 255, 0) 70%);
+		bottom: 0;
+		height: min(23rem, 44vw);
+		left: 30%;
+		width: min(23rem, 44vw);
+	}
 
 	.site-header {
 		align-items: center;
@@ -1163,6 +1330,47 @@ const mediaFeatures: VideoFeature[] = [
 		font-size: 0.89rem;
 	}
 
+	.project-gallery-wrap {
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.gallery-label {
+		color: #c8e8ff;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.project-gallery {
+		display: grid;
+		gap: 0.45rem;
+		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+	}
+
+	.gallery-item {
+		background: rgba(2, 16, 40, 0.72);
+		border: 1px solid rgba(132, 201, 255, 0.24);
+		border-radius: 0.7rem;
+		height: 8.6rem;
+		margin: 0;
+		overflow: hidden;
+	}
+
+	.gallery-item img {
+		display: block;
+		height: 100%;
+		object-fit: contain;
+		width: 100%;
+		transition: transform 0.24s ease;
+	}
+
+	.gallery-item:hover img {
+		transform: scale(1.03);
+	}
+
 	.project-details {
 		background: rgba(3, 25, 57, 0.48);
 		border: 1px solid rgba(125, 202, 255, 0.25);
@@ -1301,6 +1509,27 @@ const mediaFeatures: VideoFeature[] = [
 		list-style: decimal;
 	}
 
+	.publication-item {
+		display: grid;
+		gap: 0.42rem;
+	}
+
+	.publication-citation,
+	.publication-venue {
+		margin: 0;
+	}
+
+	.publication-venue {
+		color: var(--text-soft);
+	}
+
+	.publication-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin: 0;
+	}
+
 	.contact-layout {
 		display: grid;
 		gap: 1rem;
@@ -1363,14 +1592,23 @@ const mediaFeatures: VideoFeature[] = [
 		}
 	}
 
-		@keyframes drift {
-			from {
-				transform: translate3d(0, 0, 0) scale(1);
-			}
-			to {
-				transform: translate3d(-22px, -30px, 0) scale(1.06);
-			}
+	@keyframes starDrift {
+		from {
+			transform: translate3d(0, 0, 0);
 		}
+		to {
+			transform: translate3d(-120px, -160px, 0);
+		}
+	}
+
+	@keyframes drift {
+		from {
+			transform: translate3d(0, 0, 0) scale(1);
+		}
+		to {
+			transform: translate3d(-22px, -30px, 0) scale(1.06);
+		}
+	}
 
 	@media (max-width: 70rem) {
 		.site-header {

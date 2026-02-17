@@ -20,6 +20,29 @@ const {
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<title>{title}</title>
+		<script is:inline>
+			(() => {
+				const storageKey = 'site-theme';
+				const root = document.documentElement;
+				let theme = 'dark';
+
+				try {
+					const savedTheme = localStorage.getItem(storageKey);
+					if (savedTheme === 'light' || savedTheme === 'dark') {
+						theme = savedTheme;
+					} else if (
+						window.matchMedia &&
+						window.matchMedia('(prefers-color-scheme: light)').matches
+					) {
+						theme = 'light';
+					}
+				} catch {
+					theme = 'dark';
+				}
+
+				root.dataset.theme = theme;
+			})();
+		</script>
 	</head>
 	<body>
 		<slot />

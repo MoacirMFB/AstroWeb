@@ -115,6 +115,11 @@ const getEmbedUrl = (video: ProjectVideo): string => {
 	return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
 };
 
+const getYouTubeThumbnail = (video: ProjectVideo): string => {
+	const id = getYouTubeId(video.url);
+	return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '/name-logo.png';
+};
+
 const getProjectEra = (year: string): 'recent' | 'legacy' =>
 	year.includes('2023') ? 'recent' : 'legacy';
 
@@ -540,7 +545,7 @@ const mediaFeatures: VideoFeature[] = [
 
 		<header class="site-header">
 			<a class="brand" href="#about" aria-label="Go to top">
-				<img src="/name-logo.png" alt="Moacir Fonseca Becker" loading="lazy" />
+				<span class="brand-name">Moacir Fonseca Becker</span>
 			</a>
 			<nav aria-label="Primary navigation">
 				<ul>
@@ -553,7 +558,7 @@ const mediaFeatures: VideoFeature[] = [
 			</nav>
 			<a
 				class="cv-link"
-				href="https://drive.google.com/file/d/1KWknuQwuoegOWYUfJE6maFco96aoDjKN/view?usp=sharing"
+				href="https://drive.google.com/file/d/1vwPQEI_GvsCVWiBJQ5meD143yRfUaTRw/view?usp=sharing"
 				target="_blank"
 				rel="noreferrer"
 			>
@@ -562,7 +567,10 @@ const mediaFeatures: VideoFeature[] = [
 		</header>
 
 		<section id="about" class="hero">
-			<p class="eyebrow">hello!  Hola!  OLA!</p>
+			<p class="eyebrow">
+				<span class="eyebrow-flags" aria-hidden="true">🇺🇸 🇧🇷 🇨🇷</span>
+				<span class="eyebrow-greetings">HELLO!  OLÁ!  HOLA!</span>
+			</p>
 			<h1>Moacir Fonseca Becker</h1>
 			<div class="hero-copy">
 				{heroParagraphs.map((paragraph) => <p>{paragraph}</p>)}
@@ -571,23 +579,9 @@ const mediaFeatures: VideoFeature[] = [
 		</section>
 
 		<section id="portfolio" class="section-shell">
-			<div id="curriculum-vitae" class="cv-panel">
-				<h2>Curriculum Vitae</h2>
-				<p>Please feel free to click the link below to access my CV.</p>
-				<a
-					class="button"
-					href="https://drive.google.com/file/d/1KWknuQwuoegOWYUfJE6maFco96aoDjKN/view?usp=sharing"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Open Resume and CV
-				</a>
-			</div>
-
-			<div class="section-header">
-				<h2>Projects Portfolio</h2>
-				<p>Legacy project content migrated with full details, resources, and available video previews.</p>
-			</div>
+				<div class="section-header">
+					<h2>Projects Portfolio</h2>
+				</div>
 
 			<div class="portfolio-toolbar" role="toolbar" aria-label="Project filters">
 				<button type="button" class="filter-button is-active" data-filter="all">All Projects</button>
@@ -816,62 +810,65 @@ const mediaFeatures: VideoFeature[] = [
 				<div class="section-header">
 					<h2>Publications</h2>
 				</div>
-				<ol class="publication-list">
-					{
-						publications.map((item) => (
-							<li class="publication-item">
-								<p class="publication-citation">{item.citation}</p>
-								<p class="publication-venue">{item.venue}</p>
-								{(item.doi || item.url) && (
-									<p class="publication-links">
-										{item.doi && (
-											<a
-												class="pill-link"
-												href={`https://doi.org/${item.doi}`}
-												target="_blank"
-												rel="noreferrer"
-											>
-												DOI
-											</a>
-										)}
-										{item.url && (
-											<a class="pill-link" href={item.url} target="_blank" rel="noreferrer">
-												{item.urlLabel || 'Link'}
-											</a>
+					<ol class="publication-list">
+						{
+							publications.map((item) => (
+								<li class="publication-item">
+									<p class="publication-line">
+										<span class="publication-citation">{item.citation}</span>{' '}
+										<span class="publication-venue">{item.venue}</span>
+										{(item.doi || item.url) && (
+											<span class="publication-links">
+												{' · '}
+												{item.doi && (
+													<>
+														DOI:{' '}
+														<a href={`https://doi.org/${item.doi}`} target="_blank" rel="noreferrer">
+															{item.doi}
+														</a>
+														{item.url && ' · '}
+													</>
+												)}
+												{item.url && (
+													<a href={item.url} target="_blank" rel="noreferrer">
+														{item.urlLabel || 'Link'}
+													</a>
+												)}
+											</span>
 										)}
 									</p>
-								)}
-							</li>
-						))
-					}
-				</ol>
+								</li>
+							))
+						}
+					</ol>
 			</section>
 
-		<section id="media-interviews" class="section-shell">
-			<div class="section-header">
-				<h2>Podcast and Media Interviews</h2>
-			</div>
-			<div class="media-grid">
-				{
-					mediaFeatures.map((feature) => (
-						<article class="media-card">
-							<h3>{feature.title}</h3>
-							{feature.description && <p>{feature.description}</p>}
-							<div class="video-wrap">
-								<iframe
-									title={`${feature.title} video preview`}
-									src={getEmbedUrl(feature.video)}
-									loading="lazy"
-									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-									referrerpolicy="strict-origin-when-cross-origin"
-									allowfullscreen
-								></iframe>
-							</div>
-						</article>
-					))
-				}
-			</div>
-		</section>
+			<section id="media-interviews" class="section-shell">
+				<div class="section-header">
+					<h2>Podcast and Media Interviews</h2>
+				</div>
+				<div class="media-grid">
+					{
+						mediaFeatures.map((feature) => (
+							<article class="media-card">
+								<a class="media-link" href={feature.video.url} target="_blank" rel="noreferrer">
+									<div class="media-thumb">
+										<img
+											src={getYouTubeThumbnail(feature.video)}
+											alt={`${feature.title} preview thumbnail`}
+											loading="lazy"
+											decoding="async"
+										/>
+										<span class="media-play" aria-hidden="true">▶</span>
+									</div>
+									<h3>{feature.title}</h3>
+									{feature.description && <p>{feature.description}</p>}
+								</a>
+							</article>
+						))
+					}
+				</div>
+			</section>
 
 		<section id="contact" class="contact">
 			<h2>Would you like to collaborate?</h2>
@@ -1116,7 +1113,7 @@ const mediaFeatures: VideoFeature[] = [
 	.page {
 		margin: 0 auto;
 		max-width: 72rem;
-		padding: 1rem clamp(1.1rem, 4vw, 3.8rem) 3.4rem;
+		padding: 0 clamp(1.1rem, 4vw, 3.8rem) 3.4rem;
 		position: relative;
 		width: 100%;
 	}
@@ -1193,25 +1190,44 @@ const mediaFeatures: VideoFeature[] = [
 	.site-header {
 		align-items: center;
 		backdrop-filter: blur(14px);
-		background: rgba(3, 10, 25, 0.86);
+		background: rgba(3, 10, 25, 0.58);
 		border: 0;
-		border-bottom: 1px solid var(--line);
 		border-radius: 0;
 		box-shadow: none;
 		display: grid;
 		gap: 0.85rem;
 		grid-template-columns: auto 1fr auto;
 		margin-bottom: 1rem;
-		padding: 0.62rem 0;
+		margin-left: calc(50% - 50vw);
+		padding: 0.62rem clamp(1.1rem, 4vw, 3.8rem);
 		position: sticky;
 		top: 0;
+		width: 100vw;
 		z-index: 40;
 	}
 
-	.brand img {
-		display: block;
-		filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
-		max-width: 10rem;
+	.brand {
+		background: transparent !important;
+		padding: 0 !important;
+	}
+
+	.brand:hover {
+		background: transparent !important;
+		transform: none !important;
+	}
+
+	.brand-name {
+		background: linear-gradient(120deg, #8cd7ff 0%, #f2fbff 52%, #58b2ff 100%);
+		color: #bdefff;
+		display: inline-block;
+		font-family: 'Didot', 'Bodoni MT', 'Palatino Linotype', serif;
+		font-size: clamp(1rem, 1.75vw, 1.3rem);
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		line-height: 1.05;
+		text-wrap: balance;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
 
 	.site-header ul {
@@ -1249,7 +1265,6 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.hero,
-	.cv-panel,
 	.section-shell,
 	.contact,
 	.site-footer {
@@ -1260,7 +1275,6 @@ const mediaFeatures: VideoFeature[] = [
 		backdrop-filter: none;
 		background: transparent;
 		border: 0;
-		border-bottom: 1px solid var(--line);
 		border-radius: 0;
 		box-shadow: none;
 		display: grid;
@@ -1271,10 +1285,21 @@ const mediaFeatures: VideoFeature[] = [
 
 	.eyebrow {
 		color: var(--accent-2);
-		font-size: 0.88rem;
-		font-weight: 600;
-		letter-spacing: 0.09em;
+		display: grid;
+		gap: 0.14rem;
 		margin: 0;
+	}
+
+	.eyebrow-flags {
+		font-size: 0.98rem;
+		letter-spacing: 0.2em;
+		line-height: 1;
+	}
+
+	.eyebrow-greetings {
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.09em;
 		text-transform: uppercase;
 	}
 
@@ -1316,7 +1341,6 @@ const mediaFeatures: VideoFeature[] = [
 		backdrop-filter: none;
 		background: transparent;
 		border: 0;
-		border-bottom: 1px solid var(--line);
 		border-radius: 0;
 		box-shadow: none;
 		margin-bottom: 0;
@@ -1326,35 +1350,6 @@ const mediaFeatures: VideoFeature[] = [
 	.section-header p {
 		color: var(--text-soft);
 		margin-top: 0.25rem;
-	}
-
-	.cv-panel {
-		background: transparent;
-		border: 0;
-		border-left: 2px solid var(--line-strong);
-		border-radius: 0;
-		display: grid;
-		gap: 0.6rem;
-		margin-bottom: 1rem;
-		padding: 0.25rem 0 0.35rem 0.85rem;
-	}
-
-	.button {
-		background: transparent;
-		border: 1px solid var(--line-strong);
-		border-radius: 0.35rem;
-		color: #f3fbff;
-		display: inline-block;
-		font-weight: 700;
-		padding: 0.45rem 0.95rem;
-		text-decoration: none;
-		transition: background-color 0.2s ease, border-color 0.2s ease;
-		width: fit-content;
-	}
-
-	.button:hover {
-		background: rgba(75, 152, 255, 0.2);
-		border-color: rgba(150, 229, 255, 0.9);
 	}
 
 	.portfolio-toolbar {
@@ -1403,11 +1398,82 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.leadership-grid,
-	.education-grid,
-	.media-grid {
+	.education-grid {
 		display: grid;
 		gap: 0;
 		grid-template-columns: 1fr;
+	}
+
+	.media-grid {
+		display: grid;
+		gap: 0.7rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.media-card {
+		background: rgba(6, 20, 48, 0.58);
+		border: 1px solid rgba(114, 176, 255, 0.3);
+		border-radius: 0.45rem;
+		padding: 0.55rem;
+	}
+
+	.media-link {
+		color: inherit;
+		display: grid;
+		gap: 0.5rem;
+		text-decoration: none;
+	}
+
+	.media-thumb {
+		border: 1px solid rgba(114, 176, 255, 0.26);
+		overflow: hidden;
+		position: relative;
+	}
+
+	.media-thumb img {
+		aspect-ratio: 16 / 9;
+		display: block;
+		object-fit: cover;
+		width: 100%;
+	}
+
+	.media-play {
+		align-items: center;
+		background: rgba(2, 8, 20, 0.66);
+		border: 1px solid rgba(153, 220, 255, 0.62);
+		border-radius: 999px;
+		color: #f0fbff;
+		display: inline-flex;
+		font-size: 0.8rem;
+		font-weight: 700;
+		height: 1.6rem;
+		justify-content: center;
+		left: 0.45rem;
+		position: absolute;
+		top: 0.45rem;
+		width: 1.6rem;
+	}
+
+	.media-card p {
+		color: var(--text-soft);
+		font-size: 0.84rem;
+		line-height: 1.35;
+		margin: 0;
+	}
+
+	.media-card h3 {
+		font-size: 0.96rem;
+		line-height: 1.25;
+		margin: 0;
+	}
+
+	.media-link:hover .media-thumb img {
+		transform: scale(1.02);
+		transition: transform 0.2s ease;
+	}
+
+	.media-link:hover h3 {
+		color: #bdefff;
 	}
 
 	.project-card {
@@ -1423,11 +1489,9 @@ const mediaFeatures: VideoFeature[] = [
 
 	.leadership-card,
 	.education-card,
-	.media-card,
 	.contact-grid article {
 		background: transparent;
 		border: 0;
-		border-bottom: 1px solid rgba(114, 176, 255, 0.22);
 		border-radius: 0;
 		display: grid;
 		gap: 0.72rem;
@@ -1443,7 +1507,6 @@ const mediaFeatures: VideoFeature[] = [
 	.project-card:hover,
 	.leadership-card:hover,
 	.education-card:hover,
-	.media-card:hover,
 	.contact-grid article:hover {
 		border-color: var(--line-strong);
 	}
@@ -1490,8 +1553,7 @@ const mediaFeatures: VideoFeature[] = [
 
 	.project-card h3,
 	.leadership-card h3,
-	.education-card h3,
-	.media-card h3 {
+	.education-card h3 {
 		font-size: 1rem;
 		line-height: 1.24;
 		margin-bottom: 0;
@@ -1743,8 +1805,7 @@ const mediaFeatures: VideoFeature[] = [
 		transition: transform 0.28s ease, border-color 0.28s ease;
 	}
 
-	.project-card:hover .video-wrap,
-	.media-card:hover .video-wrap {
+	.project-card:hover .video-wrap {
 		border-color: rgba(145, 210, 255, 0.56);
 		transform: scale(1.01);
 	}
@@ -1809,15 +1870,17 @@ const mediaFeatures: VideoFeature[] = [
 
 	.publication-list {
 		list-style: decimal;
+		gap: 0.24rem;
+		padding-left: 1.15rem;
 	}
 
 	.publication-item {
-		display: grid;
-		gap: 0.42rem;
+		display: block;
+		margin: 0;
 	}
 
-	.publication-citation,
-	.publication-venue {
+	.publication-line {
+		line-height: 1.4;
 		margin: 0;
 	}
 
@@ -1826,10 +1889,20 @@ const mediaFeatures: VideoFeature[] = [
 	}
 
 	.publication-links {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-		margin: 0;
+		color: #a9c9e8;
+		opacity: 0.94;
+	}
+
+	.publication-links a {
+		color: #9ecdf3;
+		font-weight: 500;
+		text-decoration: none;
+		border-bottom: 1px dotted rgba(158, 205, 243, 0.7);
+	}
+
+	.publication-links a:hover {
+		color: #c5e7ff;
+		border-bottom-color: rgba(197, 231, 255, 0.9);
 	}
 
 	.contact-layout {
@@ -1934,8 +2007,12 @@ const mediaFeatures: VideoFeature[] = [
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
-		.brand img {
-			max-width: 12rem;
+		.media-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.brand-name {
+			font-size: clamp(1rem, 3.2vw, 1.2rem);
 		}
 
 		.cv-link {
@@ -1949,7 +2026,7 @@ const mediaFeatures: VideoFeature[] = [
 
 	@media (max-width: 38rem) {
 		.page {
-			padding: 0.85rem 0.95rem 3rem;
+			padding: 0 0.95rem 3rem;
 		}
 
 		.project-grid,
